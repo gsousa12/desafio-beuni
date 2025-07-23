@@ -1,17 +1,9 @@
-import "./App.css";
-import { button } from "./common/design-system/variants/button";
+import { PasswordInput } from "@components/password-input/PasswordInput";
 
 export const App = () => {
   return (
-    <button
-      className={button({
-        size: "sm",
-        bg_color: "secondary",
-        hover: "cursor",
-        text_color: "primary",
-      })}
-    >
-      Click me now
-    </button>
+    <>
+      <PasswordInput />
+    </>
   );
 };

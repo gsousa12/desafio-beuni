@@ -4,8 +4,8 @@ export const button = tv({
   base: "rounded-sm shadow-md px-4 py-2",
   variants: {
     bg_color: {
-      primary: "bg-primary-500 text-white",
-      secondary: "bg-primary-500 text-white",
+      primary: "bg-orange-500 ",
+      secondary: "bg-orange-500",
     },
     text_color: {
       white: "text-white",
@@ -18,7 +18,7 @@ export const button = tv({
     },
     hover: {
       cursor:
-        "hover:cursor-pointer shadow-lg transition-all duration-200 ease-in-out hover:bg-primary-600 hover:text-white",
+        "hover:cursor-pointer shadow-lg transition-all duration-200 ease-in-out hover:bg-orange-600 hover:text-white",
     },
   },
 });
