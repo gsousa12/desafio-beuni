@@ -1,7 +1,7 @@
 import { tv } from "tailwind-variants";
 
-export const button = tv({
-  base: "rounded-sm shadow-md px-4 py-2",
+export const buttonVariant = tv({
+  base: "w-full rounded-sm shadow-md px-4 py-2",
   variants: {
     bg_color: {
       primary: "bg-orange-500 ",
@@ -14,7 +14,7 @@ export const button = tv({
     size: {
       sm: "text-sm",
       md: "text-base",
-      lg: "px-4 py-3 text-lg",
+      lg: "text-lg",
     },
     hover: {
       cursor:
