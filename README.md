@@ -42,7 +42,7 @@ Este documento apresenta a solução desenvolvida para o **Desafio Técnico – 
 
 ## 3. Fluxo de Processamento
 
-![System Design](https://imgur.com/a/qYBUkGL)
+![System Design](https://i.imgur.com/YSoDCO4.png)
 
 1. **Agendamento (Cron Job)**  
    Executado diariamente para identificar colaboradores com aniversário em 8 dias corridos (assegurando 7 dias úteis de antecedência).
