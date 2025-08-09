@@ -1,22 +1,22 @@
-import Fastify from "fastify";
-import { prisma } from "@packages/prisma";
-import healthRoutes from "./routes/health";
+import "dotenv/config";
+import { startBirthdayWorker } from "./queue/worker";
+import { applicationBuilder } from "./builders/application.builder";
 
-export async function createServer() {
-  const app = Fastify({
-    logger: true,
-  });
+const port = Number(process.env.API_CORE_PORT ?? 3001);
+const host = process.env.API_CORE_HOST ?? "0.0.0.0";
 
-  app.addHook("onReady", async () => {
-    try {
-      await prisma.$queryRaw`SELECT 1`;
-      app.log.info("Database connection OK");
-    } catch (e) {
-      app.log.error({ err: e }, "Database connection FAILED");
-    }
-  });
+async function main() {
+  startBirthdayWorker();
 
-  app.register(healthRoutes, { prefix: "/health" });
+  const app = await applicationBuilder();
 
-  return app;
+  try {
+    await app.listen({ port, host });
+    console.log(`api-core listening on http://${host}:${port}`);
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
 }
+
+main();

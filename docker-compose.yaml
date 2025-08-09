@@ -32,24 +32,6 @@ services:
       timeout: 3s
       retries: 10
 
-  api-core:
-    build:
-      context: .
-      dockerfile: app/api-core/Dockerfile
-      args:
-        - NODE_VERSION=20.12.2
-    container_name: beuni-api-core
-    env_file:
-      - app/api-core/.env
-    ports:
-      - "3001:3001"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-
 networks:
   default:
     name: beuni-net

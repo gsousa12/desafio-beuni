@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@packages/types": "workspace:^",
     "bullmq": "^5.30.4",
     "dotenv": "^16.4.5",
     "ioredis": "^5.4.1",
