@@ -1,0 +1,45 @@
+{
+  "name": "beuni-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.7.1",
+  "engines": {
+    "node": "20.12.2",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "bootstrap": "pnpm install && echo '✅ Dependencies installed. Next: pnpm -r prepare'",
+    "prepare": "husky install",
+    "dev:api-core": "pnpm --filter api-core dev",
+    "dev:api-simulation": "pnpm --filter api-simulation dev",
+    "dev:birthday-check": "pnpm --filter birthday-check dev",
+    "dev:client": "pnpm --filter client dev",
+    "dev:all": "concurrently -k -n core,simulation,birthdaycheck,web -c blue,cyan,magenta,green \"pnpm dev:api-core\" \"pnpm dev:api-simulation\" \"pnpm dev:birthday-check\" \"pnpm dev:client\"",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "format": "prettier . --write",
+    "typecheck": "pnpm -r typecheck",
+    "prisma:generate": "pnpm --filter @packages/prisma prisma:generate",
+    "prisma:migrate": "pnpm --filter @packages/prisma prisma:migrate",
+    "prisma:push": "pnpm --filter @packages/prisma prisma:push",
+    "compose:up": "docker compose up -d",
+    "compose:down": "docker compose down",
+    "compose:logs": "docker compose logs -f",
+    "compose:ps": "docker compose ps",
+    "build:packages": "pnpm --filter @packages/prisma build",
+    "build:apps": "pnpm --filter ./app/** run build && pnpm --filter ./services/** run build",
+    "build:all": "pnpm build:packages && pnpm build:apps"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "concurrently": "^9.2.0",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^17.8.1",
+    "eslint-plugin-promise": "^6.4.0",
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}

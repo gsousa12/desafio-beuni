@@ -1,27 +1,59 @@
-services:
-  # Serviço do Frontend (Client) - servido com Nginx
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    depends_on:
-      - db
+version: "3.9"
 
-  # Serviço do Banco de Dados (PostgreSQL)
-  db:
-    image: postgres:15-alpine
-    restart: always
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: beuni-postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+      POSTGRES_DB: ${POSTGRES_DB:-beuni}
+      POSTGRES_USER: ${POSTGRES_USER:-beuni}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-beuni}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - beuni_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-beuni} -d ${POSTGRES_DB:-beuni}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: beuni-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - beuni_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "PING"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api-core:
+    build:
+      context: .
+      dockerfile: app/api-core/Dockerfile
+      args:
+        - NODE_VERSION=20.12.2
+    container_name: beuni-api-core
+    env_file:
+      - app/api-core/.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  default:
+    name: beuni-net
 
 volumes:
-  postgres_data:
+  beuni_pg_data:
+  beuni_redis_data:
