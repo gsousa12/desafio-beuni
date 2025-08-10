@@ -1,8 +1,12 @@
 import { z } from "zod";
-import { emailSchema, fullNameSchema } from "app/api-core/src/_shared/schemas/common.schemas";
+import {
+  createdAtSchema,
+  emailSchema,
+  fullNameSchema,
+  updatedAtSchema,
+} from "app/api-core/src/_shared/schemas/common.schemas";
 import { entitySchemaFromType } from "app/api-core/src/_shared/utils/utils";
 import { UserAddressEntity, UserEntity } from "packages/types/dist";
-import { id } from "zod/v4/locales";
 
 export const userEntitySchema = entitySchemaFromType<UserEntity>()(
   z.object({
@@ -10,8 +14,8 @@ export const userEntitySchema = entitySchemaFromType<UserEntity>()(
     full_name: z.string(),
     email: z.string().email(),
     hash_password: z.string(),
-    created_at: z.coerce.date(),
-    updated_at: z.coerce.date().nullable().optional(),
+    created_at: createdAtSchema,
+    updated_at: updatedAtSchema,
   })
 );
 
@@ -25,8 +29,8 @@ export const userAddressEntitySchema = entitySchemaFromType<UserAddressEntity>()
     street: z.string(),
     zip_code: z.string(),
     number: z.string(),
-    created_at: z.coerce.date(),
-    updated_at: z.coerce.date().nullable().optional(),
+    created_at: createdAtSchema,
+    updated_at: updatedAtSchema,
   })
 );
 

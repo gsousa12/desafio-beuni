@@ -1,4 +1,5 @@
 import { z } from "zod";
+import * as bcrypt from "bcrypt";
 
 /**
  * Função utilitária para criar um esquema Zod para um tipo de entidade.
@@ -23,12 +24,10 @@ export const getExecutionTimeSeconds = (startTime: Date): string => {
   return (diffMs / 1000).toFixed(3);
 };
 
-import * as bcrypt from "bcrypt";
-
 /**
  * Função para criptografar uma senha usando bcrypt.
- * @param plainPassword
- * @returns
+ * @param plainPassword - A senha em texto simples a ser criptografada.
+ * @returns A senha criptografada.
  */
 
 export const encryptPassword = async (plainPassword: string): Promise<string> => {
@@ -39,9 +38,9 @@ export const encryptPassword = async (plainPassword: string): Promise<string> =>
 
 /**
  * Função para comparar uma senha em texto simples com uma senha criptografada.
- * @param plainPassword
- * @param hashedPassword
- * @returns
+ * @param plainPassword - A senha em texto simples a ser comparada.
+ * @param hashedPassword - A senha criptografada para comparação.
+ * @returns Um booleano indicando se as senhas correspondem.
  */
 export const mathPassword = async (
   plainPassword: string,

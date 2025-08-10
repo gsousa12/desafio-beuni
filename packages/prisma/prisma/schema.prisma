@@ -16,7 +16,9 @@ model User {
   updated_at           DateTime? @updatedAt @db.Timestamptz 
 
   @@map("users")
-  address               UserAddress[]
+  address              UserAddress[]
+  departments          Department[] 
+  
 }
 
 model UserAddress {
@@ -29,8 +31,22 @@ model UserAddress {
   zip_code             String
   number               String
   created_at           DateTime  @default(now()) @db.Timestamptz 
-  updated_at           DateTime? @updatedAt @db.Timestamptz 
+  updated_at           DateTime? @updatedAt @db.Timestamptz
+  deleted_at           DateTime? @db.Timestamptz 
 
   @@map("user_address")
+  user                 User      @relation(fields: [user_id], references: [id])
+}
+
+model Department {
+  id                   String    @id @default(uuid())
+  user_id              String
+  name                 String    @unique
+  description          String?
+  created_at           DateTime  @default(now()) @db.Timestamptz 
+  updated_at           DateTime? @updatedAt @db.Timestamptz
+  deleted_at           DateTime? @db.Timestamptz 
+
+  @@map("departments")
   user                 User      @relation(fields: [user_id], references: [id])
 }

@@ -20,6 +20,7 @@ export const fullNameSchema = z
 
 export const createdAtSchema = z.coerce.date();
 export const updatedAtSchema = z.coerce.date().nullable().optional();
+export const deletedAtSchema = z.coerce.date().nullable().optional();
 
 export const errorSchema = z.object({
   status: z.literal("error"),
