@@ -3,8 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "types": ["vite/client"],
-    "noEmit": true
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "skipLibCheck": true
   },
   "include": ["src", "vite-env.d.ts"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules", "vite.config.ts"]
 }
