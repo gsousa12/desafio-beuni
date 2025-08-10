@@ -37,6 +37,12 @@ export const encryptPassword = async (plainPassword: string): Promise<string> =>
   return hashedPassword;
 };
 
+/**
+ * Função para comparar uma senha em texto simples com uma senha criptografada.
+ * @param plainPassword
+ * @param hashedPassword
+ * @returns
+ */
 export const mathPassword = async (
   plainPassword: string,
   hashedPassword: string

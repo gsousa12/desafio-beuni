@@ -6,12 +6,6 @@ import { createUserResponseSchema } from "../schemas/user.response.schema.js";
 
 export const userRoutes = async (fastify: FastifyInstance) => {
   const app = fastify.withTypeProvider<ZodTypeProvider>();
-
-  // Wrapper para o authenticate
-  const authenticateWrapper = async (request: FastifyRequest, reply: FastifyReply) => {
-    return app.authenticate(request, reply);
-  };
-
   app.route({
     method: "POST",
     url: "/create",
@@ -22,7 +16,7 @@ export const userRoutes = async (fastify: FastifyInstance) => {
       tags: ["User"],
       summary: "Criar usuário",
     },
-    preHandler: [authenticateWrapper],
+    preHandler: app.authenticate,
     handler: createUserHandler,
   });
 };
