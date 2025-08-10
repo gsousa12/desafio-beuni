@@ -1,0 +1,18 @@
+meta {
+  name: Create Department
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3001/api/department/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Finaneçaeeads",
+    "description": "descrição"
+  }
+}
