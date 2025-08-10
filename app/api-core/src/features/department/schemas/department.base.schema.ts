@@ -25,5 +25,12 @@ export const departmentBaseSchema = z.object({
     .trim()
     .min(3, "O campo 'name' deve ter pelo menos 3 caracteres")
     .max(100, "O campo 'name' deve ter no máximo 100 caracteres"),
-  description: z.string().trim().optional(),
+  description: z
+    .string()
+    .trim()
+    .nullable()
+    .optional()
+    .refine((val) => val === null || val === undefined || (val.length >= 3 && val.length <= 100), {
+      message: "O campo 'description' deve ter entre 3 e 100 caracteres",
+    }),
 });

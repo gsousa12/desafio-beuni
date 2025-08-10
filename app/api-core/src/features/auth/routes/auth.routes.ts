@@ -23,15 +23,11 @@ export const authRoutes = async (fastify: FastifyInstance) => {
   app.route({
     method: "POST",
     url: `/logout`,
-    // schema: {
-    //   summary: "Logar usuário",
-    //   description: "Loga um usuário beuni no sistema",
-    //   tags: ["Auth"],
-    //   body: {},
-    //   response: {
-    //     200: {},
-    //   },
-    // },
+    schema: {
+      summary: "Logar usuário",
+      description: "Loga um usuário beuni no sistema",
+      tags: ["Auth"],
+    },
     preHandler: [fastify.authenticate],
     handler: logoutHandler,
   });
