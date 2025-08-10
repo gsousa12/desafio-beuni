@@ -11,3 +11,14 @@ export const entitySchemaFromType =
   <T>() =>
   <S extends z.ZodType<T>>(schema: S) =>
     schema;
+
+/**
+ * Calcula o tempo de execução em segundos desde a data/hora fornecida.
+ * @param startTime - A data/hora de início.
+ * @returns O tempo de execução em segundos, formatado com três casas decimais.
+ */
+
+export const getExecutionTimeSeconds = (startTime: Date): string => {
+  const diffMs = Date.now() - startTime.getTime();
+  return (diffMs / 1000).toFixed(3);
+};
