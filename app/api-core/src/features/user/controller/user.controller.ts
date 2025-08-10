@@ -1,8 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserRepository } from "../repository/user.repository";
 import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
-import { CreateUserRequestSchemaType } from "../schemas/user.body.schema";
-import { encryptPassword, getExecutionTimeSeconds } from "app/api-core/src/_shared/utils/utils";
+import {
+  CreateAddressRequestSchemaType,
+  CreateUserRequestSchemaType,
+} from "../schemas/user.body.schema";
+import { encryptPassword } from "app/api-core/src/_shared/utils/utils";
 
 export const createUserHandler = async (
   request: FastifyRequest<{ Body: CreateUserRequestSchemaType }>,
@@ -12,9 +15,9 @@ export const createUserHandler = async (
   // const cronometer = new Date();
 
   try {
-    const existingUser = await UserRepository.getByEmail(email);
+    const user = await UserRepository.getByEmail(email);
 
-    if (existingUser) {
+    if (user) {
       const errorResponse: ApiErrorResponseType = {
         status: "error",
         message: "Já existe um usuário cadastrado com esse email",
@@ -37,30 +40,49 @@ export const createUserHandler = async (
 
     return reply.status(201).send(response);
   } catch (error) {
-    // const errorMetrics = {
-    //   executionTimeSeconds: getExecutionTimeSeconds(cronometer),
-    //   requestId: request.id,
-    //   method: request.method,
-    //   url: request.url,
-    //   statusCode: reply.statusCode,
-    //   body: request.body,
-    //   headers: request.headers,
-    //   error: error instanceof Error ? error.message : String(error),
-    // };
-    // console.error("Error Metrics:", errorMetrics);
   } finally {
-    // const metrics = {
-    //   executionTimeSeconds: getExecutionTimeSeconds(cronometer),
-    //   requestIp: request.ip,
-    //   requestId: request.id,
-    //   method: request.method,
-    //   url: request.url,
-    //   statusCode: reply.statusCode,
-    //   body: request.body,
-    //   headers: request.headers,
-    //   query: request.query,
-    //   params: request.params,
-    // };
-    // console.info("Request Metrics:", metrics);
+  }
+};
+
+export const createAddressHandler = async (
+  request: FastifyRequest<{ Body: CreateAddressRequestSchemaType }>,
+  reply: FastifyReply
+) => {
+  const userId = request.user.id;
+  const { state, city, neighborhood, street, zip_code, number } = request.body;
+  try {
+    const user = await UserRepository.getById(userId);
+
+    if (!user) {
+      const errorResponse: ApiErrorResponseType = {
+        status: "error",
+        message: "Usuário não encontrado",
+      };
+      return reply.status(404).send(errorResponse);
+    }
+
+    const existingAddress = await UserRepository.getAddressByUserId(userId);
+
+    if (existingAddress) {
+      const errorResponse: ApiErrorResponseType = {
+        status: "error",
+        message: "Usuário já possui um endereço cadastrado",
+      };
+      return reply.status(400).send(errorResponse);
+    }
+
+    const data = { state, city, neighborhood, street, zip_code, number };
+
+    const createdAddress = await UserRepository.createAddress(userId, data);
+
+    const response: ApiSucessResponseType = {
+      status: "success",
+      message: "Endereço criado com sucesso",
+      meta: {},
+      data: [createdAddress],
+    };
+    return reply.status(201).send(response);
+  } catch (error) {
+  } finally {
   }
 };

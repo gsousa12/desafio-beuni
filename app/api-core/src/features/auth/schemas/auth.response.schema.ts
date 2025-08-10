@@ -3,7 +3,6 @@ import z from "zod";
 import { userEntitySchema } from "../../user/schemas/user.base.schema";
 
 const loginResponse = userEntitySchema.pick({
-  id: true,
   full_name: true,
   email: true,
 });

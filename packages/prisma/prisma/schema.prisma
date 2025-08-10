@@ -14,4 +14,23 @@ model User {
   hash_password        String
   created_at           DateTime  @default(now()) @db.Timestamptz 
   updated_at           DateTime? @updatedAt @db.Timestamptz 
+
+  @@map("users")
+  address               UserAddress[]
+}
+
+model UserAddress {
+  id                   String    @id @default(uuid())
+  user_id              String
+  state                String    @db.Char(2)
+  city                 String
+  neighborhood         String
+  street               String
+  zip_code             String
+  number               String
+  created_at           DateTime  @default(now()) @db.Timestamptz 
+  updated_at           DateTime? @updatedAt @db.Timestamptz 
+
+  @@map("user_address")
+  user                 User      @relation(fields: [user_id], references: [id])
 }

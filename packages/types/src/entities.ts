@@ -6,3 +6,16 @@ export type UserEntity = {
   created_at: Date;
   updated_at?: Date | null;
 };
+
+export type UserAddressEntity = {
+  id: string;
+  user_id: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  zip_code: string;
+  number: string;
+  created_at: Date;
+  updated_at?: Date | null;
+};

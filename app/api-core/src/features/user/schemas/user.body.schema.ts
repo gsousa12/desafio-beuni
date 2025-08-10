@@ -1,5 +1,5 @@
 import { passwordSchema } from "app/api-core/src/_shared/schemas/common.schemas";
-import { userBaseSchema } from "./user.base.schema";
+import { addressBaseSchema, userBaseSchema } from "./user.base.schema";
 import { z } from "zod";
 
 export const createUserRequestSchema = userBaseSchema.extend({
@@ -7,3 +7,6 @@ export const createUserRequestSchema = userBaseSchema.extend({
 });
 
 export type CreateUserRequestSchemaType = z.infer<typeof createUserRequestSchema>;
+
+export const createAddressRequestSchema = addressBaseSchema;
+export type CreateAddressRequestSchemaType = z.infer<typeof createAddressRequestSchema>;

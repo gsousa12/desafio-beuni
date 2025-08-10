@@ -57,5 +57,11 @@ export const loginHandler = async (
 
 export const logoutHandler = async (_: FastifyRequest, reply: FastifyReply) => {
   reply.clearCookie("token", { path: "/" });
-  return reply.status(200).send({ data: {} });
+  const response: ApiSucessResponseType = {
+    status: "success",
+    message: "Usuário deslogado com sucesso",
+    meta: {},
+    data: [],
+  };
+  return reply.status(200).send(response);
 };
