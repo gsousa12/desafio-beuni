@@ -3,12 +3,12 @@ import { UserEntity } from "packages/types/dist";
 
 const db = prisma;
 
-const create = async (userData: any) => {
+const create = async (userData: any): Promise<UserEntity> => {
   return await db.user.create({
     data: {
       email: userData.email,
       full_name: userData.full_name,
-      hash_password: userData.password,
+      hash_password: userData.hashedPassword,
     },
   });
 };

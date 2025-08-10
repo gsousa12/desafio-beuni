@@ -9,3 +9,9 @@ export type ApiErrorResponseType = {
   status: "error";
   message: string;
 };
+
+export type JwtPayloadType = {
+  id: string;
+  name: string;
+  email: string;
+};

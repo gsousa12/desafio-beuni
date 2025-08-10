@@ -2,7 +2,7 @@ import { z } from "zod";
 import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
 import { userEntitySchema } from "./user.base.schema";
 
-export const createUserResponse = userEntitySchema.omit({
+const createUserResponse = userEntitySchema.omit({
   hash_password: true,
   updated_at: true,
 });

@@ -9,5 +9,8 @@ declare namespace NodeJS {
     REDIS_URL?: string;
     API_SIM_BASE_URL?: string;
     BIRTHDAY_QUEUE_NAME?: string;
+    JWT_SECRET?: string;
+    CORS_ORIGIN?: string;
+    COOKIE_SECRET?: string;
   }
 }
