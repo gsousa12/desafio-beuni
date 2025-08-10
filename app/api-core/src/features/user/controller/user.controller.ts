@@ -7,7 +7,6 @@ export const createUserHandler = async (
   request: FastifyRequest<{ Body: CreateUserRequestSchemaType }>,
   reply: FastifyReply
 ) => {
-  const requestTimer = Date.now();
   const { full_name, email, password } = request.body;
   try {
     const data = {
@@ -26,19 +25,15 @@ export const createUserHandler = async (
       return reply.status(400).send(errorResponse);
     }
 
-    await UserRepository.create(data);
+    const createdUser = await UserRepository.create(data);
 
     const response: ApiSucessResponseType = {
       status: "success",
       message: "Usuário criado com sucesso",
-      meta: {
-        request_time: Date.now() - requestTimer,
-        request_id: request.id,
-      },
-      data: [],
+      meta: {},
+      data: [createdUser],
     };
-
-    reply.status(201).send(response);
+    return reply.status(201).send(response);
   } catch (error) {
     throw error;
   } finally {

@@ -10,12 +10,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fastify/swagger": "8",
+    "@fastify/swagger-ui": "1",
     "@packages/prisma": "workspace:*",
     "@packages/types": "workspace:^",
     "bullmq": "^5.30.4",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
+    "fastify-type-provider-zod": "^4.0.0",
     "ioredis": "^5.4.1",
     "zod": "^3.25.76"
   },

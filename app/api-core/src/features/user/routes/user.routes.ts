@@ -1,18 +1,22 @@
 import { FastifyInstance } from "fastify";
-import { createUserHandler } from "../controller/user.controller";
-import { createUserRequestSchema } from "../schemas/user.body.schema";
-import { createUserResponseSchema } from "../schemas/user.response.schema";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
+import { createUserHandler } from "../controller/user.controller.js"; // .js para ESM
+import { createUserRequestSchema } from "../schemas/user.body.schema.js";
+import { createUserResponseSchema } from "../schemas/user.response.schema.js";
 
 export const userRoutes = async (fastify: FastifyInstance) => {
-  fastify.route({
+  const app = fastify.withTypeProvider<ZodTypeProvider>();
+
+  app.route({
     method: "POST",
     url: "/create",
-    preHandler: [],
     handler: createUserHandler,
-    // schema: {
-    //   description: "Cria um novo usuário beuni no sistema",
-    //   body: createUserRequestSchema,
-    //   response: createUserResponseSchema,
-    // },
+    schema: {
+      description: "Cria um novo usuário beuni no sistema",
+      body: createUserRequestSchema,
+      response: createUserResponseSchema,
+      tags: ["User"],
+      summary: "Criar usuário",
+    },
   });
 };

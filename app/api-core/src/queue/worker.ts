@@ -1,7 +1,7 @@
 import { Worker, QueueEvents, Processor } from "bullmq";
 import IORedis from "ioredis";
-import type { BirthdayJobData } from "./types";
 import { simulationClient } from "../clients/simulation/client";
+import { BirthdayJobData } from "packages/types/dist";
 
 export function startBirthdayWorker() {
   const connection = new IORedis(process.env.REDIS_URL ?? "redis://localhost:6379", {
