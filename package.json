@@ -21,6 +21,7 @@
     "typecheck": "pnpm -r typecheck",
     "prisma:generate": "pnpm --filter @packages/prisma prisma:generate",
     "prisma:migrate": "pnpm --filter @packages/prisma prisma:migrate",
+    "prisma:migrate-reset": "pnpm --filter @packages/prisma prisma:migrate reset",
     "prisma:push": "pnpm --filter @packages/prisma prisma:push",
     "compose:up": "docker compose up -d",
     "compose:down": "docker compose down",

@@ -42,7 +42,7 @@ export const encryptPassword = async (plainPassword: string): Promise<string> =>
  * @param hashedPassword - A senha criptografada para comparação.
  * @returns Um booleano indicando se as senhas correspondem.
  */
-export const mathPassword = async (
+export const matchPassword = async (
   plainPassword: string,
   hashedPassword: string
 ): Promise<boolean> => {

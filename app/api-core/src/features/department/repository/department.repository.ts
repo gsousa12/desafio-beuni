@@ -11,12 +11,12 @@ const getByName = async (name: string): Promise<DepartmentEntity | null> => {
   });
 };
 
-const create = async (userId: string, data: any): Promise<DepartmentEntity> => {
+const create = async (organizationId: string, data: any): Promise<DepartmentEntity> => {
   return await db.department.create({
     data: {
       name: data.name,
       description: data.description,
-      user_id: userId,
+      organization_id: organizationId,
     },
   });
 };

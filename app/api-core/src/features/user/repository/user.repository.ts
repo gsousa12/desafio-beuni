@@ -1,11 +1,12 @@
 import { prisma } from "packages/prisma/dist";
-import { UserAddressEntity, UserEntity } from "packages/types/dist";
+import { OrganizationAddressEntity, UserEntity } from "packages/types/dist";
 
 const db = prisma;
 
 const create = async (userData: any): Promise<UserEntity> => {
   return await db.user.create({
     data: {
+      organization_id: userData.organization_id,
       email: userData.email,
       full_name: userData.full_name,
       hash_password: userData.hashedPassword,
@@ -29,26 +30,4 @@ const getById = async (id: string): Promise<UserEntity | null> => {
   });
 };
 
-const createAddress = async (userId: string, addressData: any): Promise<UserAddressEntity> => {
-  return await db.userAddress.create({
-    data: {
-      user_id: userId,
-      state: addressData.state,
-      city: addressData.city,
-      neighborhood: addressData.neighborhood,
-      street: addressData.street,
-      zip_code: addressData.zip_code,
-      number: addressData.number,
-    },
-  });
-};
-
-const getAddressByUserId = async (userId: string): Promise<UserAddressEntity | null> => {
-  return await db.userAddress.findFirst({
-    where: {
-      user_id: userId,
-    },
-  });
-};
-
-export const UserRepository = { create, getByEmail, getById, createAddress, getAddressByUserId };
+export const UserRepository = { create, getByEmail, getById };

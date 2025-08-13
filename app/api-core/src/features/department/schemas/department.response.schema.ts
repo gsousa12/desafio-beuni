@@ -5,7 +5,7 @@ import { departmentEntitySchema } from "./department.base.schema";
 
 const createDepartmentResponse = departmentEntitySchema.omit({
   id: true,
-  user_id: true,
+  organization_id: true,
   deleted_at: true,
   updated_at: true,
 });

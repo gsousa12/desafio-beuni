@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const idSchema = z.string().uuid("O campo 'id' deve ser um UUID válido");
+
+export const cnpjSchema = z
+  .string()
+  .trim()
+  .length(14, "O campo 'tax_id' deve ter exatamente 14 caracteres");
+
 export const emailSchema = z
   .string()
   .trim()

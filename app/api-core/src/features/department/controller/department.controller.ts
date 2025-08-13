@@ -7,30 +7,27 @@ export const createDepartmentHandler = async (
   request: FastifyRequest<{ Body: CreateDepartmentRequestSchemaType }>,
   reply: FastifyReply
 ) => {
-  const userId = request.user.id;
+  const organizationId = request.user.organization_id;
+  console.log("Organization ID:", organizationId);
   const { name, description } = request.body;
-  try {
-    const department = await DepartmentRepository.getByName(name);
-    if (department) {
-      const errorResponse: ApiErrorResponseType = {
-        status: "error",
-        message: "Já existe um departamento cadastrado com esse nome",
-      };
-      return reply.status(400).send(errorResponse);
-    }
-
-    const data = { name, description, userId };
-
-    const createdDepartment = await DepartmentRepository.create(userId, data);
-
-    const response: ApiSucessResponseType = {
-      status: "success",
-      message: "Departamento criado com sucesso",
-      meta: {},
-      data: [createdDepartment],
+  const department = await DepartmentRepository.getByName(name);
+  if (department) {
+    const errorResponse: ApiErrorResponseType = {
+      status: "error",
+      message: "Já existe um departamento cadastrado com esse nome",
     };
-    return reply.status(201).send(response);
-  } catch (error) {
-  } finally {
+    return reply.status(400).send(errorResponse);
   }
+
+  const data = { name, description, organizationId };
+
+  const createdDepartment = await DepartmentRepository.create(organizationId, data);
+
+  const response: ApiSucessResponseType = {
+    status: "success",
+    message: "Departamento criado com sucesso",
+    meta: {},
+    data: [createdDepartment],
+  };
+  return reply.status(201).send(response);
 };

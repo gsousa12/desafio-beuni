@@ -1,5 +1,14 @@
+export type OrganizationEntity = {
+  id: String;
+  name: String;
+  cnpj: String;
+  created_at: Date;
+  updated_at?: Date | null;
+};
+
 export type UserEntity = {
   id: string;
+  organization_id: string;
   full_name: string;
   email: string;
   hash_password: string;
@@ -7,9 +16,9 @@ export type UserEntity = {
   updated_at?: Date | null;
 };
 
-export type UserAddressEntity = {
+export type OrganizationAddressEntity = {
   id: string;
-  user_id: string;
+  organization_id: string;
   state: string;
   city: string;
   neighborhood: string;
@@ -23,9 +32,23 @@ export type UserAddressEntity = {
 
 export type DepartmentEntity = {
   id: string;
-  user_id: string;
+  organization_id: string;
   name: string;
   description?: string | null;
+  created_at: Date;
+  updated_at?: Date | null;
+  deleted_at?: Date | null;
+};
+
+export type EmployeeEntity = {
+  id: string;
+  department_id: string;
+  name: string;
+  email: string;
+  cpf: string;
+  phone: string;
+  position: string;
+  birth_date: Date;
   created_at: Date;
   updated_at?: Date | null;
   deleted_at?: Date | null;

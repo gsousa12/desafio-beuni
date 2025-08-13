@@ -10,7 +10,7 @@ import z from "zod";
 export const departmentEntitySchema = entitySchemaFromType<DepartmentEntity>()(
   z.object({
     id: z.string().uuid(),
-    user_id: z.string().uuid(),
+    organization_id: z.string().uuid(),
     name: z.string(),
     description: z.string().optional(),
     created_at: createdAtSchema,

@@ -19,6 +19,7 @@
     "@packages/types": "workspace:^",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.30.4",
+    "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
