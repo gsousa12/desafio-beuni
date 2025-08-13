@@ -1,10 +1,13 @@
-import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
+import {
+  emailSchema,
+  errorSchema,
+  passwordSchema,
+} from "app/api-core/src/_shared/schemas/common.schemas";
 import z from "zod";
-import { userEntitySchema } from "../../user/schemas/user.base.schema";
 
-const loginResponse = userEntitySchema.pick({
-  full_name: true,
-  email: true,
+const loginResponse = z.object({
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export const loginResponseSchema = {

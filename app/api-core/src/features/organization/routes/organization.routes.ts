@@ -1,17 +1,13 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import {
-  createAddressRequestSchema,
-  createOrganizationRequestSchema,
-} from "../schemas/organization.body.schemas";
-import {
-  createAdressResponseSchema,
-  createOrganizationResponseSchema,
-} from "../schemas/organization.response.schemas";
-import {
   createAddressHandler,
   createOrganizationHandler,
 } from "../controller/organization.controller";
+import { createOrganizationRequestSchema } from "../schemas/request/create.request.schema";
+import { createOrganizationResponseSchema } from "../schemas/response/create.response.schema";
+import { createAdressResponseSchema } from "../schemas/response/create-address.request.schema";
+import { createAddressRequestSchema } from "../schemas/request/create-address.request.schema";
 
 export const organizationRoutes = async (fastify: FastifyInstance) => {
   const app = fastify.withTypeProvider<ZodTypeProvider>();

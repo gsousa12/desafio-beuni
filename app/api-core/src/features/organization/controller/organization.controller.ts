@@ -1,11 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import {
-  CreateAddressRequestSchemaType,
-  CreateOrganizationRequestSchemaType,
-} from "../schemas/organization.body.schemas";
 import { cnpj as cnpjValidator } from "cpf-cnpj-validator";
 import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
 import { OrganizationRepository } from "../repository/organization.repository";
+import { CreateOrganizationRequestSchemaType } from "../schemas/request/create.request.schema";
+import { CreateAddressRequestSchemaType } from "../schemas/request/create-address.request.schema";
+
 export const createOrganizationHandler = async (
   request: FastifyRequest<{ Body: CreateOrganizationRequestSchemaType }>,
   reply: FastifyReply

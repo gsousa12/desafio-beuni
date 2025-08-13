@@ -1,5 +1,5 @@
 import { prisma } from "packages/prisma/dist";
-import { OrganizationAddressEntity, UserEntity } from "packages/types/dist";
+import { UserEntity } from "packages/types/dist";
 
 const db = prisma;
 

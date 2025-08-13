@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { loginRequestSchemaType } from "../schemas/auth.body.schema";
 import { UserRepository } from "../../user/repository/user.repository";
 import { ApiErrorResponseType, ApiSucessResponseType, JwtPayloadType } from "packages/types/dist";
 import { matchPassword } from "app/api-core/src/_shared/utils/utils";
+import { loginRequestSchemaType } from "../schemas/request/login.request.schema";
 
 export const loginHandler = async (
   request: FastifyRequest<{ Body: loginRequestSchemaType }>,

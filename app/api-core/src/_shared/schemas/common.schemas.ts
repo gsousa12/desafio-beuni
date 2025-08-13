@@ -2,6 +2,11 @@ import { z } from "zod";
 
 export const idSchema = z.string().uuid("O campo 'id' deve ser um UUID válido");
 
+export const zipCodeSchema = z
+  .string()
+  .trim()
+  .length(8, "O campo 'zip_code' deve ter exatamente 8 caracteres");
+
 export const cnpjSchema = z
   .string()
   .trim()
@@ -33,3 +38,50 @@ export const errorSchema = z.object({
   status: z.literal("error"),
   message: z.string(),
 });
+
+export const stateSchema = z
+  .string()
+  .length(2, "O campo 'state' deve ter exatamente 2 caracteres")
+  .transform((val) => val.toUpperCase())
+  .refine((val) => /^[A-Z]{2}$/.test(val), {
+    message: "O campo 'state' deve conter apenas letras maiúsculas",
+  });
+
+export const nameSchema = z
+  .string()
+  .trim()
+  .min(3, "O campo 'name' deve ter pelo menos 3 caracteres")
+  .max(100, "O campo 'name' deve ter no máximo 100 caracteres");
+
+export const descriptionSchema = z
+  .string()
+  .trim()
+  .nullable()
+  .optional()
+  .refine((val) => val === null || val === undefined || (val.length >= 3 && val.length <= 100), {
+    message: "O campo 'description' deve ter entre 3 e 100 caracteres",
+  });
+
+export const citySchema = z
+  .string()
+  .trim()
+  .min(3, "O campo 'city' deve ter pelo menos 3 caracteres")
+  .max(100, "O campo 'city' deve ter no máximo 100 caracteres");
+
+export const neighborhoodSchema = z
+  .string()
+  .trim()
+  .min(5, "O campo 'neighborhood' deve ter pelo menos 5 caracteres")
+  .max(200, "O campo 'neighborhood' deve ter no máximo 200 caracteres");
+
+export const streetSchema = z
+  .string()
+  .trim()
+  .min(5, "O campo 'neighborhood' deve ter pelo menos 5 caracteres")
+  .max(200, "O campo 'neighborhood' deve ter no máximo 200 caracteres");
+
+export const residentialNumberSchema = z
+  .string()
+  .trim()
+  .min(1, "O campo 'number' deve ter pelo menos 1 caracteres")
+  .max(20, "O campo 'number' deve ter no máximo 20 caracteres");

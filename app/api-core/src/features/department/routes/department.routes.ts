@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { createDepartmentRequestSchema } from "../schemas/department.body.schema";
 import { createDepartmentHandler } from "../controller/department.controller";
-import { createDepartmentResponseSchema } from "../schemas/department.response.schema";
+import { createDepartmentRequestSchema } from "../schemas/request/create.request.schema";
+import { createDepartmentResponseSchema } from "../schemas/response/create.response.schema";
 
 export const departmentRoutes = async (fastify: FastifyInstance) => {
   const app = fastify.withTypeProvider<ZodTypeProvider>();

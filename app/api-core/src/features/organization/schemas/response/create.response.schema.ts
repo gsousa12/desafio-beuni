@@ -1,19 +1,18 @@
-import { z } from "zod";
+import z from "zod";
+import { organizationEntitySchema } from "../entity.schema";
 import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
-import { userEntitySchema } from "./user.base.schema";
 
-const createUserResponse = userEntitySchema.omit({
+export const createOrganizationResponse = organizationEntitySchema.omit({
   id: true,
-  hash_password: true,
   updated_at: true,
 });
 
-export const createUserResponseSchema = {
+export const createOrganizationResponseSchema = {
   201: z.object({
     status: z.literal("success"),
     message: z.string(),
     meta: z.any(),
-    data: z.array(createUserResponse),
+    data: z.array(createOrganizationResponse),
   }),
   400: errorSchema,
   500: errorSchema,

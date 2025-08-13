@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CreateDepartmentRequestSchemaType } from "../schemas/department.body.schema";
 import { DepartmentRepository } from "../repository/department.repository";
 import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
+import { CreateDepartmentRequestSchemaType } from "../schemas/request/create.request.schema";
 
 export const createDepartmentHandler = async (
   request: FastifyRequest<{ Body: CreateDepartmentRequestSchemaType }>,

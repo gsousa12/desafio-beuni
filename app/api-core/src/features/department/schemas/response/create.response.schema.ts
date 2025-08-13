@@ -1,7 +1,6 @@
 import z from "zod";
-import { createDepartmentRequestSchema } from "./department.body.schema";
+import { departmentEntitySchema } from "../entity.schema";
 import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
-import { departmentEntitySchema } from "./department.base.schema";
 
 const createDepartmentResponse = departmentEntitySchema.omit({
   id: true,
@@ -15,7 +14,7 @@ export const createDepartmentResponseSchema = {
     status: z.literal("success"),
     message: z.string(),
     meta: z.any(),
-    data: z.array(createDepartmentRequestSchema),
+    data: z.array(createDepartmentResponse),
   }),
   400: errorSchema,
   500: errorSchema,
