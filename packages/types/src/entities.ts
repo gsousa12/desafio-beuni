@@ -50,6 +50,9 @@ export type EmployeeEntity = {
   phone: string;
   position: string;
   birth_date: Date;
+  birth_date_month: String;
+  birth_date_day: String;
+  birth_date_year: String;
   created_at: Date;
   updated_at?: Date | null;
   deleted_at?: Date | null;

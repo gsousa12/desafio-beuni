@@ -175,7 +175,7 @@ const countUpcomingBirthdays = async (): Promise<number> => {
   }
 
   return await db.employee.count({
-    where: {},
+    where: birthdayWhere,
   });
 };
 

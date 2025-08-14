@@ -4,6 +4,7 @@ import { EmployeeRepository } from "../repository/employee.repository";
 import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
 import { DepartmentRepository } from "../../department/repository/department.repository";
+import { parseBirthDate } from "app/api-core/src/_shared/utils/utils";
 
 export const createEmployeeHandler = async (
   request: FastifyRequest<{ Body: createEmployeeRequestSchemaType }>,
@@ -11,9 +12,7 @@ export const createEmployeeHandler = async (
 ) => {
   const userId = request.user.id;
   const organizationId = request.user.organization_id;
-
   const { name, birth_date, cpf, email, phone, position, department_id } = request.body;
-
   const isValidCpf = cpfValidator.isValid(cpf);
 
   if (!isValidCpf) {
@@ -52,9 +51,14 @@ export const createEmployeeHandler = async (
     return reply.status(404).send(errorResponse);
   }
 
+  const { birth_date_year, birth_date_month, birth_date_day } = parseBirthDate(birth_date);
+
   const data = {
     name,
     birth_date,
+    birth_date_year,
+    birth_date_month,
+    birth_date_day,
     cpf,
     email,
     phone,

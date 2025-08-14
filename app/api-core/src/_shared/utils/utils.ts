@@ -48,3 +48,38 @@ export const matchPassword = async (
 ): Promise<boolean> => {
   return bcrypt.compare(plainPassword, hashedPassword);
 };
+
+/**
+ * Função para analisar uma string de data de nascimento no formato "YYYY-MM-DD".
+ * Esta função divide a string em ano, mês e dia e retorna um objeto com esses valores.
+ * @param dateStr - A string de data no formato "YYYY-MM-DD".
+ * @returns - Um objeto contendo o ano, mês e dia da data de nascimento.
+ */
+
+type BirthDateParts = {
+  birth_date_year: string;
+  birth_date_month: string;
+  birth_date_day: string;
+};
+
+export const parseBirthDate = (date: Date): BirthDateParts => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    throw new Error("O campo 'birth_date' deve ser uma data válida");
+  }
+
+  const iso = date.toISOString();
+
+  const year = iso.slice(0, 4);
+  const month = iso.slice(5, 7);
+  const day = iso.slice(8, 10);
+
+  if (year.length !== 4 || month.length !== 2 || day.length !== 2) {
+    throw new Error("O campo 'birth_date' deve estar no formato 'YYYY-MM-DD'");
+  }
+
+  return {
+    birth_date_year: year,
+    birth_date_month: month,
+    birth_date_day: day,
+  };
+};

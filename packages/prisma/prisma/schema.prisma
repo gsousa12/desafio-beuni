@@ -75,6 +75,9 @@ model Employee {
   phone                String    
   position             String
   birth_date           DateTime  @db.Date
+  birth_date_month     String
+  birth_date_day       String
+  birth_date_year      String
   created_at           DateTime  @default(now()) @db.Timestamptz 
   updated_at           DateTime? @updatedAt @db.Timestamptz
   deleted_at           DateTime? @db.Timestamptz 
