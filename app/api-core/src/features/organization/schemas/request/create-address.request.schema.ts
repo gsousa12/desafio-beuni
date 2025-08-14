@@ -8,5 +8,6 @@ export const createAddressRequestSchema = organizationAddressEntitySchema.pick({
   street: true,
   zip_code: true,
   number: true,
+  organization_id: true,
 });
 export type CreateAddressRequestSchemaType = z.infer<typeof createAddressRequestSchema>;

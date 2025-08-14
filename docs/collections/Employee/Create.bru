@@ -1,0 +1,24 @@
+meta {
+  name: Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3001/api/employee/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "João Silva",
+    "email": "joao.silva@example.com",
+    "cpf": "53301249051",
+    "phone": "11987654321",
+    "position": "Analista de Sistemas",
+    "birth_date": "1990-05-20",
+    "department_id": "729dd11e-45d7-4184-9544-372f237b8dd4"
+  }
+  
+}

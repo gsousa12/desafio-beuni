@@ -35,7 +35,6 @@ export const organizationRoutes = async (fastify: FastifyInstance) => {
       body: createAddressRequestSchema,
       response: createAdressResponseSchema,
     },
-    preHandler: app.authenticate,
     handler: createAddressHandler,
   });
 };

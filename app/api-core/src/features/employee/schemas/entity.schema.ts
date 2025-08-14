@@ -7,6 +7,7 @@ import {
   idSchema,
   nameSchema,
   phoneSchema,
+  positionSchema,
   updatedAtSchema,
 } from "app/api-core/src/_shared/schemas/common.schemas";
 import { entitySchemaFromType } from "app/api-core/src/_shared/utils/utils";
@@ -22,7 +23,7 @@ export const employeeEntitySchema = entitySchemaFromType<EmployeeEntity>()(
     email: emailSchema,
     cpf: cpfSchema,
     phone: phoneSchema,
-    position: z.string().trim().max(100, "O campo 'position' deve ter no máximo 100 caracteres"),
+    position: positionSchema,
     birth_date: birthDateSchema,
     created_at: createdAtSchema,
     updated_at: updatedAtSchema,

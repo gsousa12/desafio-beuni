@@ -56,9 +56,8 @@ export const createAddressHandler = async (
   request: FastifyRequest<{ Body: CreateAddressRequestSchemaType }>,
   reply: FastifyReply
 ) => {
-  const organizationId = request.user.organization_id;
-  const { state, city, neighborhood, street, zip_code, number } = request.body;
-  const organization = await OrganizationRepository.getById(organizationId);
+  const { state, city, neighborhood, street, zip_code, number, organization_id } = request.body;
+  const organization = await OrganizationRepository.getById(organization_id);
 
   if (!organization) {
     const errorResponse: ApiErrorResponseType = {
@@ -68,19 +67,19 @@ export const createAddressHandler = async (
     return reply.status(404).send(errorResponse);
   }
 
-  const existingAddress = await OrganizationRepository.getAddressByOrganizationId(organizationId);
+  const existingAddress = await OrganizationRepository.getAddressByOrganizationId(organization_id);
 
   if (existingAddress) {
     const errorResponse: ApiErrorResponseType = {
       status: "error",
-      message: "Usuário já possui um endereço cadastrado",
+      message: "A organização já possui um endereço cadastrado",
     };
     return reply.status(400).send(errorResponse);
   }
 
   const data = { state, city, neighborhood, street, zip_code, number };
 
-  const createdAddress = await OrganizationRepository.createAddress(organizationId, data);
+  const createdAddress = await OrganizationRepository.createAddress(organization_id, data);
 
   const response: ApiSucessResponseType = {
     status: "success",

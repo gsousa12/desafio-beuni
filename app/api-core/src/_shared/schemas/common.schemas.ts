@@ -99,3 +99,8 @@ export const phoneSchema = z
 export const birthDateSchema = z.date().refine((date) => date <= new Date(), {
   message: "O campo 'birth_date' deve ser uma data válida no passado ou presente",
 });
+
+export const positionSchema = z
+  .string()
+  .trim()
+  .max(100, "O campo 'position' deve ter no máximo 100 caracteres");

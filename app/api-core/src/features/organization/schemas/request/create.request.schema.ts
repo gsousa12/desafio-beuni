@@ -1,4 +1,3 @@
-import { cnpjSchema } from "app/api-core/src/_shared/schemas/common.schemas";
 import z from "zod";
 import { organizationEntitySchema } from "../entity.schema";
 
