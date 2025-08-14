@@ -28,7 +28,7 @@ export const createEmployeeRequestSchema = z.object({
   cpf: cpfSchema,
   phone: phoneSchema,
   position: z.string().trim().max(100, "O campo 'position' deve ter no máximo 100 caracteres"),
-  birth_date: birthDateRequestSchema, // string transformada para Date
+  birth_date: birthDateRequestSchema,
   department_id: idSchema,
 });
 

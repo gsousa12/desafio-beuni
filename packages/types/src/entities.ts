@@ -54,3 +54,17 @@ export type EmployeeEntity = {
   updated_at?: Date | null;
   deleted_at?: Date | null;
 };
+
+export type BirthdayEmployee = {
+  employee: Pick<EmployeeEntity, "id" | "name" | "email" | "position"> & {
+    birth_date?: string;
+  };
+  organization: {
+    id: string;
+    name: string;
+    address: Pick<
+      OrganizationAddressEntity,
+      "state" | "city" | "neighborhood" | "street" | "zip_code" | "number"
+    >;
+  };
+};

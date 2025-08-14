@@ -31,7 +31,7 @@ export const organizationRoutes = async (fastify: FastifyInstance) => {
     schema: {
       summary: "Criar endereço",
       description: "Cadastra um endereço para a organização",
-      tags: ["User"],
+      tags: ["Organization"],
       body: createAddressRequestSchema,
       response: createAdressResponseSchema,
     },
