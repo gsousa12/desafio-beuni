@@ -5,6 +5,7 @@ import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
 export const createEmployeeResponse = employeeEntitySchema.omit({
   id: true,
   department_id: true,
+  organization_id: true,
   updated_at: true,
   deleted_at: true,
 });
