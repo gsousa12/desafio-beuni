@@ -8,9 +8,8 @@ export const createDepartmentHandler = async (
   reply: FastifyReply
 ) => {
   const organizationId = request.user.organization_id;
-  console.log("Organization ID:", organizationId);
   const { name, description } = request.body;
-  const department = await DepartmentRepository.getByName(name);
+  const department = await DepartmentRepository.getByName(name, organizationId);
   if (department) {
     const errorResponse: ApiErrorResponseType = {
       status: "error",

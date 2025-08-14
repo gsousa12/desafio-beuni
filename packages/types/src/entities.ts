@@ -42,6 +42,7 @@ export type DepartmentEntity = {
 
 export type EmployeeEntity = {
   id: string;
+  organization_id: string;
   department_id: string;
   name: string;
   email: string;

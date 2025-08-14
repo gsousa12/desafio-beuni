@@ -5,19 +5,18 @@ import { createDepartmentRequestSchema } from "../schemas/request/create.request
 import { createDepartmentResponseSchema } from "../schemas/response/create.response.schema";
 
 export const departmentRoutes = async (fastify: FastifyInstance) => {
-  const app = fastify.withTypeProvider<ZodTypeProvider>();
-
-  app.route({
-    method: "POST",
-    url: "/create",
-    schema: {
-      summary: "Criar departamento",
-      description: "Cria um novo departamento no sistema",
-      tags: ["Department"],
-      body: createDepartmentRequestSchema,
-      response: createDepartmentResponseSchema,
-    },
-    preHandler: app.authenticate,
-    handler: createDepartmentHandler,
-  });
+  // const app = fastify.withTypeProvider<ZodTypeProvider>();
+  // app.route({
+  //   method: "POST",
+  //   url: "/create",
+  //   schema: {
+  //     summary: "Criar departamento",
+  //     description: "Cria um novo departamento no sistema",
+  //     tags: ["Department"],
+  //     body: createDepartmentRequestSchema,
+  //     response: createDepartmentResponseSchema,
+  //   },
+  //   preHandler: app.authenticate,
+  //   handler: createDepartmentHandler,
+  // });
 };

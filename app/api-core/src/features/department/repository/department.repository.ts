@@ -3,10 +3,23 @@ import { DepartmentEntity } from "packages/types/dist";
 
 const db = prisma;
 
-const getByName = async (name: string): Promise<DepartmentEntity | null> => {
+const getByName = async (
+  name: string,
+  organization_id: string
+): Promise<DepartmentEntity | null> => {
   return await db.department.findUnique({
     where: {
       name,
+      organization_id,
+    },
+  });
+};
+
+const getById = async (id: string, organizationId: string): Promise<DepartmentEntity | null> => {
+  return await db.department.findFirst({
+    where: {
+      id,
+      organization_id: organizationId,
     },
   });
 };
@@ -21,4 +34,4 @@ const create = async (organizationId: string, data: any): Promise<DepartmentEnti
   });
 };
 
-export const DepartmentRepository = { getByName, create };
+export const DepartmentRepository = { getByName, create, getById };

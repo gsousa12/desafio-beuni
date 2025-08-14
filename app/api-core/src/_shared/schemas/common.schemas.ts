@@ -85,3 +85,17 @@ export const residentialNumberSchema = z
   .trim()
   .min(1, "O campo 'number' deve ter pelo menos 1 caracteres")
   .max(20, "O campo 'number' deve ter no máximo 20 caracteres");
+
+export const cpfSchema = z
+  .string()
+  .trim()
+  .length(11, "O campo 'cpf' deve ter exatamente 11 caracteres");
+
+export const phoneSchema = z
+  .string()
+  .trim()
+  .max(15, "O campo 'phone' deve ter no máximo 15 caracteres");
+
+export const birthDateSchema = z.date().refine((date) => date <= new Date(), {
+  message: "O campo 'birth_date' deve ser uma data válida no passado ou presente",
+});
