@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { DepartmentRepository } from "../repository/department.repository";
-import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
+import { ApiErrorResponseType, ApiSuccessResponseType } from "packages/types/dist";
 import { CreateDepartmentRequestSchemaType } from "../schemas/request/create.request.schema";
 
 export const createDepartmentHandler = async (
@@ -22,7 +22,7 @@ export const createDepartmentHandler = async (
 
   const createdDepartment = await DepartmentRepository.create(organizationId, data);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Departamento criado com sucesso",
     meta: {},

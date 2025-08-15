@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { cnpj as cnpjValidator } from "cpf-cnpj-validator";
-import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
+import { ApiErrorResponseType, ApiSuccessResponseType } from "packages/types/dist";
 import { OrganizationRepository } from "../repository/organization.repository";
 import { CreateOrganizationRequestSchemaType } from "../schemas/request/create.request.schema";
 import { CreateAddressRequestSchemaType } from "../schemas/request/create-address.request.schema";
@@ -42,7 +42,7 @@ export const createOrganizationHandler = async (
 
   const createdOrganization = await OrganizationRepository.create(data);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Organização criada com sucesso",
     meta: {},
@@ -81,7 +81,7 @@ export const createAddressHandler = async (
 
   const createdAddress = await OrganizationRepository.createAddress(organization_id, data);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Endereço criado com sucesso",
     meta: {},

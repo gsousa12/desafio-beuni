@@ -1,5 +1,6 @@
 import { z } from "zod";
 import * as bcrypt from "bcrypt";
+import { PaginationMeta } from "packages/types/dist";
 
 /**
  * Função utilitária para criar um esquema Zod para um tipo de entidade.
@@ -81,5 +82,32 @@ export const parseBirthDate = (date: Date): BirthDateParts => {
     birth_date_year: year,
     birth_date_month: month,
     birth_date_day: day,
+  };
+};
+
+/**
+ * Função para criar metadados de paginação.
+ * @param page
+ * @param pageSize
+ * @param total
+ * @returns
+ */
+
+export const createPaginationMeta = (
+  page: number,
+  pageSize: number,
+  total: number
+): PaginationMeta => {
+  const totalPages = Math.ceil(total / pageSize);
+
+  return {
+    current_page: page,
+    per_page: pageSize,
+    total,
+    total_pages: totalPages,
+    has_next: page < totalPages,
+    has_previous: page > 1,
+    next_page: page < totalPages ? page + 1 : null,
+    previous_page: page > 1 ? page - 1 : null,
   };
 };

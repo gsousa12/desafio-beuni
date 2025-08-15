@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserRepository } from "../../user/repository/user.repository";
-import { ApiErrorResponseType, ApiSucessResponseType, JwtPayloadType } from "packages/types/dist";
+import { ApiErrorResponseType, ApiSuccessResponseType, JwtPayloadType } from "packages/types/dist";
 import { matchPassword } from "app/api-core/src/_shared/utils/utils";
 import { loginRequestSchemaType } from "../schemas/request/login.request.schema";
 
@@ -42,7 +42,7 @@ export const loginHandler = async (
     sameSite: "lax",
   });
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Usuário logado com sucesso",
     meta: {},
@@ -54,7 +54,7 @@ export const loginHandler = async (
 
 export const logoutHandler = async (_: FastifyRequest, reply: FastifyReply) => {
   reply.clearCookie("token", { path: "/" });
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Usuário deslogado com sucesso",
     meta: {},

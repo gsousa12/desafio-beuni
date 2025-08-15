@@ -1,18 +1,18 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createEmployeeRequestSchemaType } from "../schemas/request/create.request.schema";
 import { EmployeeRepository } from "../repository/employee.repository";
-import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
+import { ApiErrorResponseType, ApiSuccessResponseType } from "packages/types/dist";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
 import { DepartmentRepository } from "../../department/repository/department.repository";
 import { parseBirthDate } from "app/api-core/src/_shared/utils/utils";
+import { getAllEmployeeRequestSchemaType } from "../schemas/request/get-all-employee.request.schema";
 
 export const createEmployeeHandler = async (
   request: FastifyRequest<{ Body: createEmployeeRequestSchemaType }>,
   reply: FastifyReply
 ) => {
-  const userId = request.user.id;
   const organizationId = request.user.organization_id;
-  console.log(`[createEmployeeHandler] userId: ${userId}, organizationId: ${organizationId}`);
+
   const { name, birth_date, cpf, email, phone, position, department_id } = request.body;
   const isValidCpf = cpfValidator.isValid(cpf);
 
@@ -66,16 +66,34 @@ export const createEmployeeHandler = async (
     position,
     department_id,
     organizationId,
-    created_by: userId,
   };
 
   const createdEmployee = await EmployeeRepository.create(data, organizationId);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Colaborador criado com sucesso",
     meta: {},
     data: [createdEmployee],
   };
   return reply.status(201).send(response);
+};
+
+export const getAllEmployeeHandler = async (
+  request: FastifyRequest<{ Querystring: getAllEmployeeRequestSchemaType }>,
+  reply: FastifyReply
+) => {
+  const organizationId = request.user.organization_id;
+  const { page = 1, ...filters } = request.query;
+
+  const result = await EmployeeRepository.getAll(page, filters, organizationId);
+
+  const response: ApiSuccessResponseType = {
+    status: "success",
+    message: "Colaboradores encontrados com sucesso",
+    meta: result.meta,
+    data: result.data,
+  };
+
+  return reply.status(200).send(response);
 };

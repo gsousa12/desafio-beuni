@@ -1,7 +1,7 @@
-export type ApiSucessResponseType<T = any> = {
+export type ApiSuccessResponseType<T = any> = {
   status: "success";
   message: string;
-  meta: T & {};
+  meta: PaginationMeta | {};
   data: T[];
 };
 
@@ -15,4 +15,20 @@ export type JwtPayloadType = {
   organization_id: string;
   name: string;
   email: string;
+};
+
+export type PaginationMeta = {
+  current_page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+  has_next: boolean;
+  has_previous: boolean;
+  next_page: number | null;
+  previous_page: number | null;
+};
+
+export type PaginatedResult<T> = {
+  data: T[];
+  meta: PaginationMeta;
 };

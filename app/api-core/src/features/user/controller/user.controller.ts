@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { UserRepository } from "../repository/user.repository";
-import { ApiErrorResponseType, ApiSucessResponseType } from "packages/types/dist";
+import { ApiErrorResponseType, ApiSuccessResponseType } from "packages/types/dist";
 import { encryptPassword } from "app/api-core/src/_shared/utils/utils";
 import { CreateUserRequestSchemaType } from "../schemas/request/create.request.schema";
 
@@ -25,7 +25,7 @@ export const createUserHandler = async (
 
   const createdUser = await UserRepository.create(data);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Usuário criado com sucesso",
     meta: {},
@@ -56,7 +56,7 @@ export const createAdminUserHandler = async (
 
   const createdUser = await UserRepository.create(data);
 
-  const response: ApiSucessResponseType = {
+  const response: ApiSuccessResponseType = {
     status: "success",
     message: "Usuário criado com sucesso",
     meta: {},

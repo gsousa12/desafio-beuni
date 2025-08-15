@@ -104,3 +104,11 @@ export const positionSchema = z
   .string()
   .trim()
   .max(100, "O campo 'position' deve ter no máximo 100 caracteres");
+
+export const paginationSchema = z.object({
+  page: z.coerce
+    .number()
+    .int("O campo 'page' deve ser um número inteiro")
+    .min(1, "O campo 'page' deve ser um número inteiro positivo")
+    .default(1),
+});
