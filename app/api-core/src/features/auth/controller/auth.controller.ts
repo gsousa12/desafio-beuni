@@ -27,8 +27,6 @@ export const loginHandler = async (
     return reply.status(400).send(errorResponse);
   }
 
-  console.log(existingUser);
-
   const jwtPayload: JwtPayloadType = {
     id: existingUser.id,
     organization_id: existingUser.organization_id,

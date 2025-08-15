@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@fastify/cookie": "9.4.0",
     "@fastify/cors": "^9.0.0",
     "@fastify/jwt": "7.2.4",
@@ -17,10 +18,12 @@
     "@fastify/swagger-ui": "1",
     "@packages/prisma": "workspace:*",
     "@packages/types": "workspace:^",
+    "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.30.4",
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.4.5",
+    "faker": "^6.6.6",
     "fastify": "^4.28.1",
     "fastify-plugin": "^4.5.1",
     "fastify-type-provider-zod": "^4.0.0",

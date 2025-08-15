@@ -10,7 +10,7 @@ import cookie from "@fastify/cookie";
 import auth from "../plugins/auth";
 
 export const fastifyAppConfiguration: FastifyServerOptions = {
-  logger: true,
+  logger: false,
   ignoreTrailingSlash: true,
   ignoreDuplicateSlashes: true,
 };

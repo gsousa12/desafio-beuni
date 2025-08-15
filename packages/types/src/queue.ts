@@ -9,3 +9,9 @@ export type BirthdayProcessJobData = {
   type: "birthday-process";
   employee: BirthdayEmployee;
 };
+
+export interface BirthdayJobData {
+  type: "birthday-gift";
+  employee: BirthdayEmployee;
+  scheduledAt: string;
+}

@@ -59,7 +59,10 @@ export type EmployeeEntity = {
 };
 
 export type BirthdayEmployee = {
-  employee: Pick<EmployeeEntity, "id" | "name" | "email" | "position"> & {
+  employee: Pick<
+    EmployeeEntity,
+    "id" | "name" | "email" | "position" | "birth_date_day" | "birth_date_month" | "birth_date_year"
+  > & {
     birth_date?: string;
   };
   organization: {

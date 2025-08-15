@@ -1,73 +1,85 @@
-import { Queue, Worker, QueueEvents, JobsOptions, Processor } from "bullmq";
-import IORedis from "ioredis";
-import { BirthdayCheckJobData, BirthdayProcessJobData } from "packages/types/dist";
+import { Queue, Worker, Job } from "bullmq";
+import logger from "./logger";
+import { BirthdayJobData } from "packages/types/dist";
 
-// Union type para todos os tipos de jobs
-export type BirthdayJobData = BirthdayCheckJobData | BirthdayProcessJobData;
+const REDIS_URL = process.env.REDIS_URL!;
+const QUEUE_NAME = "birthday-gifts";
 
-const connection = new IORedis(process.env.REDIS_URL ?? "redis://localhost:6379", {
-  maxRetriesPerRequest: null,
-});
+const redisConfig = {
+  connection: {
+    host: new URL(REDIS_URL).hostname,
+    port: Number(new URL(REDIS_URL).port) || 6379,
+    password: new URL(REDIS_URL).password || undefined,
+  },
+};
 
-const queueName = process.env.BIRTHDAY_QUEUE_NAME ?? "birthday-queue";
+let queueInstance: Queue<BirthdayJobData> | null = null;
 
-// Fila principal para birthday jobs
-export const birthdayQueue = new Queue<BirthdayJobData>(queueName, { connection });
-export const birthdayQueueEvents = new QueueEvents(queueName, { connection });
+export const getBirthdayQueue = (): Queue<BirthdayJobData> => {
+  if (!queueInstance) {
+    queueInstance = new Queue<BirthdayJobData>(QUEUE_NAME, redisConfig);
+    logger.info("[queue] birthday gift queue initialized");
+  }
+  return queueInstance;
+};
 
-// Criador de worker tipado
-export const createWorker = (
-  processor: Processor<BirthdayJobData, unknown, string>,
-  concurrency = Number(process.env.BIRTHDAY_CHECK_CONCURRENCY ?? 5)
+export const enqueueEmployeeBirthdayGift = async (
+  jobData: BirthdayJobData,
+  options?: { delay?: number }
 ) => {
-  const worker = new Worker<BirthdayJobData>(queueName, processor, {
-    connection,
+  const queue = getBirthdayQueue();
+  const jobId = `birthday-gift-${jobData.employee.employee.id}`;
+
+  const job = await queue.add("birthday-gift", jobData, {
+    jobId,
+    delay: options?.delay,
+    removeOnComplete: 50,
+    removeOnFail: 100,
+  });
+
+  logger.info(`[queue] enqueued gift job for ${jobData.employee.employee.name}`, {
+    jobId: job.id,
+    employeeId: jobData.employee.employee.id,
+  });
+
+  return job;
+};
+
+export const createBirthdayWorker = (
+  processor: (job: Job<BirthdayJobData>) => Promise<any>,
+  concurrency = 5
+) => {
+  const worker = new Worker<BirthdayJobData>(QUEUE_NAME, processor, {
+    ...redisConfig,
     concurrency,
   });
 
   worker.on("completed", (job) => {
-    console.log(`[worker] job ${job.id} completed successfully`);
+    logger.info(`[queue] gift job completed successfully`, { jobId: job.id });
   });
 
   worker.on("failed", (job, err) => {
-    console.error(`[worker] job ${job?.id} failed:`, err);
-  });
-
-  worker.on("active", (job) => {
-    console.log(`[worker] processing job ${job.id} of type ${job.data.type}`);
+    logger.error(`[queue] gift job failed`, { jobId: job?.id, error: err.message });
   });
 
   return worker;
 };
 
-// Helper para enqueue jobs
-export const enqueueBirthdayCheck = async (options?: JobsOptions) => {
-  const payload: BirthdayCheckJobData = {
-    type: "birthday-check",
-    scheduledAt: new Date().toISOString(),
-  };
+export const checkForExistingGiftJobs = async (employeeId: string): Promise<boolean> => {
+  try {
+    const queue = getBirthdayQueue();
+    const [waiting, active, delayed] = await Promise.all([
+      queue.getWaiting(),
+      queue.getActive(),
+      queue.getDelayed(),
+    ]);
 
-  return await birthdayQueue.add("birthday-check", payload, {
-    removeOnComplete: 100,
-    removeOnFail: 50,
-    ...options,
-  });
+    const allJobs = [...waiting, ...active, ...delayed];
+    const existingJob = allJobs.find((job) => job.data?.employee?.employee?.id === employeeId);
+
+    return !!existingJob;
+  } catch (error) {
+    logger.error("[queue] error checking existing jobs", { employeeId, error });
+    return false;
+  }
 };
-
-export const enqueueBirthdayProcess = async (
-  employee: BirthdayProcessJobData["employee"],
-  options?: JobsOptions
-) => {
-  const payload: BirthdayProcessJobData = {
-    type: "birthday-process",
-    employee,
-  };
-
-  return await birthdayQueue.add("birthday-process", payload, {
-    removeOnComplete: 100,
-    removeOnFail: 50,
-    ...options,
-  });
-};
-
-export type EnqueueOptions = JobsOptions;

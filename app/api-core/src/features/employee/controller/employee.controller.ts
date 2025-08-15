@@ -12,6 +12,7 @@ export const createEmployeeHandler = async (
 ) => {
   const userId = request.user.id;
   const organizationId = request.user.organization_id;
+  console.log(`[createEmployeeHandler] userId: ${userId}, organizationId: ${organizationId}`);
   const { name, birth_date, cpf, email, phone, position, department_id } = request.body;
   const isValidCpf = cpfValidator.isValid(cpf);
 
