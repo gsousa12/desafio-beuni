@@ -18,15 +18,11 @@ export class GiftDeliveryService {
       };
     }
 
-    // Idempotência diária
     const alreadyExists = await giftDeliveryRepository.findExistingDelivery(employeeId);
     if (alreadyExists) {
       return { success: true, employeeId, error: "Delivery already processed today" };
     }
-
-    // Chama a API com o payload EXATO do Redis (sem transformar)
     const shippingResult = await shippingClient.ship(jobData as any);
-
     if (!shippingResult.success) {
       return {
         success: false,
@@ -35,7 +31,6 @@ export class GiftDeliveryService {
         shouldRetry: shippingResult.shouldRetry,
       };
     }
-
     const metadata: DeliveryMetadata = {
       shippingId: shippingResult.data.shippingId,
       destination: shippingResult.data.destination,
@@ -43,9 +38,7 @@ export class GiftDeliveryService {
       shippingCost: shippingResult.data.shippingCost,
       processedAt: new Date().toISOString(),
     };
-
     await giftDeliveryRepository.createDelivery(employeeId, metadata);
-
     return { success: true, employeeId, shippingId: shippingResult.data.shippingId };
   }
 }

@@ -1,9 +1,7 @@
 import { BirthdayJobData } from "./types";
 
-// Tipos importados do birthday service (o mesmo que foi enfileirado)
 export type { BirthdayJobData } from "packages/types/dist";
 
-// Tipos da API de simulação (resposta)
 export type ApiSimulationDestination = {
   state: string;
   city: string;
@@ -29,7 +27,6 @@ export type ApiSimulationResponse = {
   };
 };
 
-// Tipos para delivery service
 export type GiftDeliveryResult = {
   success: boolean;
   employeeId: string;
@@ -47,7 +44,6 @@ export type DeliveryMetadata = {
   attempts?: number;
 };
 
-// A request da simulação é exatamente o payload do Redis
 export type ShippingRequest = BirthdayJobData;
 
 export type ShippingApiResponse = {

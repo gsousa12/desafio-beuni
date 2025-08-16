@@ -42,7 +42,6 @@ export class GiftProcessor {
     }
 
     const err = new Error(result.error || "Falha ao processar gift");
-    // marca se pode retentar, para o handler decidir re-enfileirar
     (err as any).__shouldRetry = result.shouldRetry !== false;
     throw err;
   }
@@ -57,7 +56,7 @@ export class GiftProcessor {
     });
 
     this.worker.on("failed", async (job, error) => {
-      const shouldRetry = (error as any)?.__shouldRetry !== false; // default: true
+      const shouldRetry = (error as any)?.__shouldRetry !== false;
       const employeeId =
         (job?.data as any)?.data?.employee?.id ||
         (job?.data as any)?.employee?.employee?.id ||
@@ -74,7 +73,6 @@ export class GiftProcessor {
         console.warn(
           "[gift-processor] Não será reprocessado (erro não retentável ou queue indisponível)."
         );
-        // Remove o job falho para não deixar resíduo no Redis
         try {
           await job?.remove();
           console.log("[gift-processor] Job falho removido (não retentável)", { jobId: job?.id });
@@ -91,13 +89,12 @@ export class GiftProcessor {
         const uniqueIdSuffix = `${Date.now()}`;
         await this.queue.add("birthday-gift", job!.data, {
           jobId: `${job!.id}:retry:${uniqueIdSuffix}`,
-          delay: 30_000, // 30s
+          delay: 30_000,
           removeOnComplete: true,
-          removeOnFail: true, // <- importante para não acumular novas falhas
+          removeOnFail: true,
         });
         console.log("[gift-processor] Job re-enfileirado no fim da fila para reprocessamento.");
 
-        // Remove o job que falhou para não ficar preso no Redis
         try {
           await job?.remove();
           console.log("[gift-processor] Job falho removido após reenfileirar", { jobId: job?.id });
@@ -109,7 +106,6 @@ export class GiftProcessor {
         }
       } catch (reAddErr) {
         console.error("[gift-processor] Falha ao reenfileirar job:", reAddErr);
-        // Obs: se não conseguimos reenfileirar, não removemos o job falho para não perder o item
       }
     });
 

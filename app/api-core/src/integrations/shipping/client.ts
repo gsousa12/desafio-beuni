@@ -1,7 +1,7 @@
 import { ShippingRequest, ShippingResult, ShippingApiResponse } from "./types";
 
 const BASE_URL = process.env.API_SIM_BASE_URL ?? "http://localhost:3002";
-const TIMEOUT_MS = 30_000; // 30s
+const TIMEOUT_MS = 30_000;
 
 export class ShippingApiClient {
   private baseURL: string;

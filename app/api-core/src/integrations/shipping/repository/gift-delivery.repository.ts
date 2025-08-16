@@ -8,7 +8,7 @@ export class GiftDeliveryRepository {
     const delivery = await db.employeeGiftDeliveries.create({
       data: {
         employee_id: employeeId,
-        metadata: metadata as any, // Db Json
+        metadata: metadata as any,
       },
       select: { id: true },
     });
