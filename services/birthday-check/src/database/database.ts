@@ -1,6 +1,6 @@
 import { prisma } from "packages/prisma/dist";
 import { BirthdayEmployee } from "packages/types/dist";
-import logger from "../logger";
+import logger from "../services/logger";
 
 const db = prisma;
 

@@ -6,6 +6,9 @@ export const createEmployeeResponse = employeeEntitySchema.omit({
   id: true,
   department_id: true,
   organization_id: true,
+  birth_date_day: true,
+  birth_date_month: true,
+  birth_date_year: true,
   updated_at: true,
   deleted_at: true,
 });

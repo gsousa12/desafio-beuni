@@ -1,17 +1,9 @@
 import { Queue, Worker, Job } from "bullmq";
-import logger from "./logger";
+import logger from "../services/logger";
 import { BirthdayJobData } from "packages/types/dist";
+import { redisConfig } from "../database/redis";
 
-const REDIS_URL = process.env.REDIS_URL!;
 const QUEUE_NAME = "birthday-gifts";
-
-const redisConfig = {
-  connection: {
-    host: new URL(REDIS_URL).hostname,
-    port: Number(new URL(REDIS_URL).port) || 6379,
-    password: new URL(REDIS_URL).password || undefined,
-  },
-};
 
 let queueInstance: Queue<BirthdayJobData> | null = null;
 

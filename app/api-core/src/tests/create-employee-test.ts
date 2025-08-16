@@ -48,7 +48,8 @@ function generateRandomEmployee(): Employee {
     cpf: cpfValidator.generate(),
     phone: `9${faker.string.numeric(8)}`,
     position: faker.person.jobTitle(),
-    birth_date: faker.date.birthdate({ min: 18, max: 65, mode: "age" }).toISOString().split("T")[0],
+    // birth_date: faker.date.birthdate({ min: 18, max: 65, mode: "age" }).toISOString().split("T")[0],
+    birth_date: "2001-08-18",
     department_id: "729dd11e-45d7-4184-9544-372f237b8dd4",
   };
 }
@@ -57,7 +58,7 @@ async function createEmployeeWithAuth(cookie: string): Promise<void> {
   const employee = generateRandomEmployee();
 
   try {
-    const response = await api.post("/api/employee/create", employee, {
+    const response = await api.post("/api/employee/", employee, {
       headers: {
         Cookie: cookie,
       },
@@ -74,7 +75,7 @@ async function createEmployeeWithAuth(cookie: string): Promise<void> {
 
 async function runStressTest() {
   try {
-    const quantity = 5000;
+    const quantity = 8000;
     console.log("🔒 Tentando login...");
     const cookie = await login();
 

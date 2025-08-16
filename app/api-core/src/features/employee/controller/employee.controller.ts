@@ -12,6 +12,7 @@ import {
   editEmployeeRequestBodySchemaType,
   editEmployeeRequestParamSchemaType,
 } from "../schemas/request/edit.request.schema";
+import { DEFAULT_PAGE } from "app/api-core/src/_shared/const/pagination";
 
 export const createEmployeeHandler = async (
   request: FastifyRequest<{ Body: createEmployeeRequestSchemaType }>,
@@ -90,7 +91,7 @@ export const getAllEmployeeHandler = async (
   reply: FastifyReply
 ) => {
   const organizationId = request.user.organization_id;
-  const { page = 1, ...filters } = request.query;
+  const { page = DEFAULT_PAGE, ...filters } = request.query;
 
   const result = await EmployeeRepository.getAll(page, filters, organizationId);
 

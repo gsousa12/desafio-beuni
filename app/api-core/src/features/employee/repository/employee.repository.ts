@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from "app/api-core/src/_shared/const/pagination";
 import { createPaginationMeta } from "app/api-core/src/_shared/utils/utils";
 import { prisma } from "packages/prisma/dist";
 import { EmployeeEntity, PaginatedResult } from "packages/types/dist";
@@ -45,7 +46,7 @@ const getAll = async (
   filters: any,
   organization_id: string
 ): Promise<PaginatedResult<EmployeeEntity>> => {
-  const pageSize = 10;
+  const pageSize = DEFAULT_PAGE_SIZE;
   const skip = (page - 1) * pageSize;
 
   const where: any = { organization_id, deleted_at: null };

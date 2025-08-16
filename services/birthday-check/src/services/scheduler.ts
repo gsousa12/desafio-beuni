@@ -1,11 +1,10 @@
 import * as cron from "node-cron";
-import { BirthdayCheckService } from "./birthday-check.service";
 import logger from "./logger";
+import { BirthdayCheckService } from "./checker";
 
-export class BirthdayScheduler {
-  static start(): void {
+export const BirthdayScheduler = {
+  start: (): void => {
     const cronExpression = "0 * * * *";
-    logger.info("-------------------------------------------------------");
     logger.info("[scheduler] starting birthday gift scheduler", {
       cronExpression,
       timezone: process.env.TIMEZONE ?? "America/Sao_Paulo",
@@ -28,7 +27,6 @@ export class BirthdayScheduler {
       }
     );
 
-    // Execução inicial em desenvolvimento
     if (process.env.NODE_ENV === "development") {
       logger.info("[scheduler] running initial birthday check in 5 seconds (dev mode)");
       setTimeout(async () => {
@@ -39,5 +37,5 @@ export class BirthdayScheduler {
         }
       }, 5000);
     }
-  }
-}
+  },
+};
