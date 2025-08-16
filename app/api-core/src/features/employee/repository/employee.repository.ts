@@ -22,7 +22,7 @@ const getByEmail = async (email: string, organization_id: string) => {
   });
 };
 
-const create = async (data: any, organization_id: string) => {
+const create = async (data: any, organization_id: string): Promise<EmployeeEntity> => {
   return await db.employee.create({
     data: {
       name: data.name,
@@ -87,4 +87,55 @@ const getAll = async (
   return { data, meta };
 };
 
-export const EmployeeRepository = { getByCpf, getByEmail, create, getAll };
+const getById = async (id: string, organization_id: string): Promise<EmployeeEntity | null> => {
+  return await db.employee.findFirst({
+    where: {
+      id,
+      organization_id,
+      deleted_at: null,
+    },
+  });
+};
+
+const softDelete = async (id: string, organization_id: string): Promise<EmployeeEntity | null> => {
+  return await db.employee.update({
+    where: {
+      id,
+      organization_id,
+    },
+    data: {
+      deleted_at: new Date(),
+    },
+  });
+};
+
+const update = async (id: string, data: any, organization_id: string): Promise<EmployeeEntity> => {
+  return await db.employee.update({
+    where: {
+      id,
+      organization_id,
+    },
+    data: {
+      name: data.name,
+      cpf: data.cpf,
+      email: data.email,
+      phone: data.phone,
+      birth_date: data.birth_date,
+      birth_date_month: data.birth_date_month,
+      birth_date_day: data.birth_date_day,
+      birth_date_year: data.birth_date_year,
+      position: data.position,
+      department_id: data.department_id,
+    },
+  });
+};
+
+export const EmployeeRepository = {
+  getByCpf,
+  getByEmail,
+  getById,
+  getAll,
+  create,
+  softDelete,
+  update,
+};

@@ -63,20 +63,30 @@ type BirthDateParts = {
   birth_date_day: string;
 };
 
-export const parseBirthDate = (date: Date): BirthDateParts => {
-  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+/**
+ * Função para analisar uma data de nascimento e retornar seus componentes.
+ * @param dateInput - A data de nascimento como Date object ou string no formato YYYY-MM-DD.
+ * @returns Um objeto contendo o ano, mês e dia da data de nascimento.
+ */
+export const parseBirthDate = (dateInput: Date | string): BirthDateParts => {
+  let date: Date;
+
+  if (typeof dateInput === "string") {
+    const [year, month, day] = dateInput.split("-");
+    date = new Date(Number(year), Number(month) - 1, Number(day));
+  } else if (dateInput instanceof Date) {
+    date = dateInput;
+  } else {
     throw new Error("O campo 'birth_date' deve ser uma data válida");
   }
 
-  const iso = date.toISOString();
-
-  const year = iso.slice(0, 4);
-  const month = iso.slice(5, 7);
-  const day = iso.slice(8, 10);
-
-  if (year.length !== 4 || month.length !== 2 || day.length !== 2) {
-    throw new Error("O campo 'birth_date' deve estar no formato 'YYYY-MM-DD'");
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("O campo 'birth_date' deve ser uma data válida");
   }
+
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
 
   return {
     birth_date_year: year,

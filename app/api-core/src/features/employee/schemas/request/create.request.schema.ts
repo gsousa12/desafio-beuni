@@ -14,8 +14,8 @@ export const birthDateRequestSchema = z
     message: "O campo 'birth_date' deve estar no formato YYYY-MM-DD",
   })
   .transform((str) => {
-    const date = new Date(str);
-    date.setHours(0, 0, 0, 0);
+    const [year, month, day] = str.split("-");
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
     return date;
   })
   .refine((date) => date <= new Date(), {
