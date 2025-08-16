@@ -27,9 +27,9 @@ export const executeBirthdayCheck = async (): Promise<void> => {
     for (let batch = 0; batch < totalBatches; batch++) {
       logger.info(`[birthday-check] processing batch ${batch + 1}/${totalBatches}`);
 
-      const employees = await DatabaseService.getUpcomingBirthdays(batch, BATCH_SIZE);
+      const data = await DatabaseService.getUpcomingBirthdays(batch, BATCH_SIZE);
 
-      const processingPromises = employees.map(async (employee, index) => {
+      const processingPromises = data.map(async (employee, index) => {
         const employeeId = employee.employee.id;
         const employeeName = employee.employee.name;
 
@@ -49,7 +49,7 @@ export const executeBirthdayCheck = async (): Promise<void> => {
           // Criar job para envio de brinde
           const jobData: BirthdayJobData = {
             type: "birthday-gift",
-            employee,
+            data: employee,
             scheduledAt: new Date().toISOString(),
           };
 
@@ -66,7 +66,7 @@ export const executeBirthdayCheck = async (): Promise<void> => {
 
           enqueuedCount++;
         } catch (error) {
-          logger.error(`[birthday-check] failed to process employee`, {
+          logger.error(`[birthday-check] failed to process employee ${error}`, {
             employeeId,
             employeeName,
             error,

@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: "http://localhost:3001",
   withCredentials: true,
 });
-
+// npx tsx src/tests/create-employee-test.ts
 interface Employee {
   name: string;
   email: string;
@@ -75,7 +75,7 @@ async function createEmployeeWithAuth(cookie: string): Promise<void> {
 
 async function runStressTest() {
   try {
-    const quantity = 8000;
+    const quantity = 10000;
     console.log("🔒 Tentando login...");
     const cookie = await login();
 

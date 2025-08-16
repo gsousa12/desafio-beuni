@@ -7,11 +7,11 @@ export type BirthdayCheckJobData = {
 
 export type BirthdayProcessJobData = {
   type: "birthday-process";
-  employee: BirthdayEmployee;
+  data: BirthdayEmployee;
 };
 
-export interface BirthdayJobData {
+export type BirthdayJobData = {
   type: "birthday-gift";
-  employee: BirthdayEmployee;
+  data: BirthdayEmployee;
   scheduledAt: string;
-}
+};

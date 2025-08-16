@@ -20,7 +20,7 @@ export const enqueueEmployeeBirthdayGift = async (
   options?: { delay?: number }
 ) => {
   const queue = getBirthdayQueue();
-  const jobId = `birthday-gift-${jobData.employee.employee.id}`;
+  const jobId = `birthday-gift-${jobData.data.employee.id}`;
 
   const job = await queue.add("birthday-gift", jobData, {
     jobId,
@@ -29,9 +29,9 @@ export const enqueueEmployeeBirthdayGift = async (
     removeOnFail: 100,
   });
 
-  logger.info(`[queue] enqueued gift job for ${jobData.employee.employee.name}`, {
+  logger.info(`[queue] enqueued gift job for ${jobData.data.employee.name}`, {
     jobId: job.id,
-    employeeId: jobData.employee.employee.id,
+    employeeId: jobData.data.employee.id,
   });
 
   return job;
@@ -67,7 +67,7 @@ export const checkForExistingGiftJobs = async (employeeId: string): Promise<bool
     ]);
 
     const allJobs = [...waiting, ...active, ...delayed];
-    const existingJob = allJobs.find((job) => job.data?.employee?.employee?.id === employeeId);
+    const existingJob = allJobs.find((job) => job.data?.data?.employee?.id === employeeId);
 
     return !!existingJob;
   } catch (error) {

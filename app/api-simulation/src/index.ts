@@ -1,11 +1,11 @@
 import "dotenv/config";
-import { createServer } from "./server";
+import { applicationBuilder } from "./builder/application.builder";
 
 const port = Number(process.env.API_SIM_PORT ?? 3002);
 const host = process.env.API_SIM_HOST ?? "0.0.0.0";
 
 async function main() {
-  const app = await createServer();
+  const app = await applicationBuilder();
 
   try {
     await app.listen({ port, host });

@@ -1,6 +1,5 @@
 import fastify, { FastifyServerOptions } from "fastify";
 import router from "../plugins/router";
-import { startBirthdayWorker } from "../queue/worker";
 import zodPlugin from "../plugins/zod";
 import swaggerPlugin from "../plugins/swagger";
 import errorHandlerPlugin from "../plugins/error-handler";
@@ -17,8 +16,6 @@ export const fastifyAppConfiguration: FastifyServerOptions = {
 
 export const applicationBuilder = async () => {
   const application = fastify(fastifyAppConfiguration).withTypeProvider<ZodTypeProvider>();
-
-  startBirthdayWorker();
 
   // Plugins
   await application.register(cors);

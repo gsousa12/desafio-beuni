@@ -1,14 +1,18 @@
-import Fastify from "fastify";
-import healthRoutes from "./routes/health";
-import shipRoutes from "./routes/ship";
+import { applicationBuilder } from "./builder/application.builder";
 
-export async function createServer() {
-  const app = Fastify({
-    logger: true,
-  });
+const port = Number(process.env.API_SIM_PORT ?? 3002);
+const host = process.env.API_SIM_HOST ?? "0.0.0.0";
 
-  app.register(healthRoutes, { prefix: "/health" });
-  app.register(shipRoutes, { prefix: "/ship" });
+async function main() {
+  const application = await applicationBuilder();
 
-  return app;
+  try {
+    await application.listen({ port, host });
+    console.log(`api-core listening on http://${host}:${port}`);
+  } catch (err) {
+    application.log.error(err);
+    process.exit(1);
+  }
 }
+
+main();

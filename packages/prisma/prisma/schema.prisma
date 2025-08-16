@@ -85,4 +85,16 @@ model Employee {
   @@map("employees")
   department           Department @relation(fields: [department_id], references: [id])
   organization         Organization @relation(fields: [organization_id], references: [id])
+  EmployeeGiftDeliveries EmployeeGiftDeliveries[]
+}
+
+model EmployeeGiftDeliveries {
+  id                   String    @id @default(uuid())
+  employee_id          String
+  metadata             Json?
+  created_at           DateTime  @default(now()) @db.Timestamptz
+  updated_at           DateTime? @updatedAt @db.Timestamptz
+
+  @@map("employee_gift_deliveries")
+  employee             Employee @relation(fields: [employee_id], references: [id])
 }
