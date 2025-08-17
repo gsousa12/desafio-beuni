@@ -3,19 +3,19 @@ import { ShippingRequest, ShippingResult, ShippingApiResponse } from "./types";
 const BASE_URL = process.env.API_SIM_BASE_URL ?? "http://localhost:3002";
 const TIMEOUT_MS = 30_000;
 
-export class ShippingApiClient {
-  private baseURL: string;
+const shouldRetryError = (statusCode: number): boolean => {
+  return statusCode >= 500 || statusCode === 408 || statusCode === 429;
+};
 
-  constructor(baseURLOverride?: string) {
-    this.baseURL = baseURLOverride ?? BASE_URL;
-  }
+const createShippingClient = (baseURLOverride?: string) => {
+  const baseURL = baseURLOverride ?? BASE_URL;
 
-  async ship(request: ShippingRequest): Promise<ShippingResult> {
+  const ship = async (request: ShippingRequest): Promise<ShippingResult> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-      const res = await fetch(`${this.baseURL}/api/ship/`, {
+      const res = await fetch(`${baseURL}/api/ship/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request),
@@ -31,7 +31,7 @@ export class ShippingApiClient {
           success: false,
           error: data?.message || `HTTP_${res.status}`,
           message: data?.message,
-          shouldRetry: this.shouldRetryError(res.status),
+          shouldRetry: shouldRetryError(res.status),
         };
       }
 
@@ -62,11 +62,12 @@ export class ShippingApiClient {
       }
       return { success: false, error: err?.message ?? "Network error", shouldRetry: true };
     }
-  }
+  };
 
-  private shouldRetryError(statusCode: number): boolean {
-    return statusCode >= 500 || statusCode === 408 || statusCode === 429;
-  }
-}
+  return {
+    ship,
+  };
+};
 
-export const shippingClient = new ShippingApiClient();
+export const shippingClient = createShippingClient();
+export const createShippingApiClient = createShippingClient;
