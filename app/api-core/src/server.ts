@@ -7,7 +7,7 @@ const host = process.env.API_CORE_HOST ?? "0.0.0.0";
 
 async function main() {
   const application = await applicationBuilder();
-  await startGiftProcessor(10);
+  // await startGiftProcessor(10);
   try {
     await application.listen({ port, host });
     console.log(`api-core listening on http://${host}:${port}`);
