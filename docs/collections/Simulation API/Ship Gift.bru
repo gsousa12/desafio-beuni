@@ -1,0 +1,42 @@
+meta {
+  name: Ship Gift
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3002/api/ship/
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "type": "birthday-gift",
+    "data": {
+      "employee": {
+        "id": "a93a7e61-0559-456a-94da-e1b3c77bbbc9",
+        "name": "Maria Júlia Batista",
+        "email": "alessandra70@live.com",
+        "position": "Regional Identidade Associado",
+        "birth_date_day": "16",
+        "birth_date_month": "08",
+        "birth_date_year": "1969",
+        "birth_date": "1969-08-16"
+      },
+      "organization": {
+        "id": "ecd46c8c-801d-4993-a826-149bbd7f346b",
+        "name": "Seven Organization",
+        "address": {
+          "state": "CE",
+          "city": "São Paulo",
+          "neighborhood": "Centro",
+          "street": "Avenida Paulista",
+          "zip_code": "01311000",
+          "number": "1578"
+        }
+      }
+    },
+    "scheduledAt": "2025-08-16T20:13:30.335Z"
+  }
+}
