@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { NotFoundPage } from "../not-found-page/NotFoundPage";
-import { ProtectedRoute } from "../app-protected-route/ProtectedRoute";
+import { ProtectedRoute } from "../protected-route/ProtectedRoute";
 import { DashboardPage } from "@/features/dashboard/pages/DashboardPage";
 
-export const AppRoutes = () => {
+export const AuthenticatedRoutes = () => {
   return (
     <main className="flex flex-1 min-h-0 flex-col">
       <Routes>

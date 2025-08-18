@@ -4,7 +4,7 @@ export const NotFoundPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4">
       <div className="text-center">
         <h1 className="text-9xl font-extrabold text-orange-500 drop-shadow-lg">404</h1>
         <h2 className="mt-6 text-2xl font-bold text-gray-800">Página não encontrada</h2>

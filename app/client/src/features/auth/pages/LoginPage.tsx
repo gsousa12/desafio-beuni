@@ -7,6 +7,7 @@ import { AlertPopup } from "@/components/popups/alert-popup/AlertPopup";
 import { useLoginPageController } from "../hooks/useLoginPageController";
 import { useMobileDetect } from "@/_shared/hooks/useMobileDetect";
 import { LoginPageLeftSide } from "../components/login-page-left-side/LoginPageLeftSide";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z.email("E-mail inválido"),
@@ -20,6 +21,7 @@ export const LoginPage = () => {
   const isMobile = useMobileDetect();
   const [showPassword, setShowPassword] = useState(false);
   const [openAlertPopUp, setOpenAlertPopUp] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     error ? setOpenAlertPopUp(true) : setOpenAlertPopUp(false);
@@ -118,7 +120,7 @@ export const LoginPage = () => {
               <p className="text-sm text-gray-600">Novo na nossa plataforma?</p>
               <span
                 className="text-orange-500 hover:cursor-pointer"
-                onClick={() => console.log("Criar conta")}
+                onClick={() => navigate("/register", { replace: true })}
               >
                 Crie uma conta
               </span>
