@@ -1,4 +1,3 @@
-import { useMobileDetect } from "../../../_shared/hooks/useMobileDetect";
 import { ReactNode } from "react";
 
 interface GlobalWrapperProps {
@@ -6,6 +5,5 @@ interface GlobalWrapperProps {
 }
 
 export const GlobalWrapper = ({ children }: GlobalWrapperProps) => {
-  const isMobile = useMobileDetect();
-  return <div>{children}</div>;
+  return <div className="min-h-[100svh] flex flex-col">{children}</div>;
 };

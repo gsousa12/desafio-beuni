@@ -7,7 +7,7 @@ import { MobileMenuButton } from "./mobile/mobile-menu-button/MobileMenuButton";
 import { MobileHeaderDrawer } from "./mobile/mobile-header-drawer/MobileHeaderDrawer";
 import { AlignEndHorizontal, Building2, Gift, LucideProps, Users } from "lucide-react";
 
-export const MOCK_USERNAME = "peoplebeuni";
+export const MOCK_USERNAME = "Tester";
 
 export type LucideIcon = React.ForwardRefExoticComponent<
   Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
@@ -34,7 +34,7 @@ const Logo: React.FC = () => {
   );
 };
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const isMobile = useMobileDetect();
   const [open, setOpen] = useState(false);
 

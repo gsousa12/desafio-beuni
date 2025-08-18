@@ -5,6 +5,7 @@ import { LoginPage } from "./features/auth/pages/LoginPage";
 import { RoutesWrapper } from "./components/wrappers/routes-wrapper/RoutesWrapper";
 import { AppRoutes } from "./components/app/app-routes/AppRoutes";
 import { Header } from "./components/header/Header";
+import { Footer } from "./components/footer/Footer";
 
 export const App = () => {
   const isAuthenticated = true;
@@ -16,6 +17,7 @@ export const App = () => {
           <RoutesWrapper>
             <AppRoutes />
           </RoutesWrapper>
+          <Footer />
         </Fragment>
       ) : (
         <LoginPage />
