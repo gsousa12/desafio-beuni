@@ -1,3 +1,4 @@
+import { ApiErrorResponseType, ApiSuccessResponseType, PaginationMeta } from "@packages/types";
 import {
   useMutation,
   useQuery,
@@ -7,7 +8,6 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { ApiErrorResponseType, ApiSuccessResponseType, PaginationMeta } from "./types";
 
 export interface ProcessedApiResponse<T> {
   data: T[];
