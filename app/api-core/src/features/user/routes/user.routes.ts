@@ -9,7 +9,7 @@ export const userRoutes = async (fastify: FastifyInstance) => {
 
   app.route({
     method: "POST",
-    url: "/create",
+    url: "/",
     schema: {
       summary: "Criar usuário",
       description: "Cria um novo usuário beuni no sistema",

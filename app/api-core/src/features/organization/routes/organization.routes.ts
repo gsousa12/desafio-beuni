@@ -14,7 +14,7 @@ export const organizationRoutes = async (fastify: FastifyInstance) => {
 
   app.route({
     method: "POST",
-    url: "/create",
+    url: "/",
     schema: {
       summary: "Criar organização",
       description: "Cria uma nova organização (cliente beuni) no sistema",
