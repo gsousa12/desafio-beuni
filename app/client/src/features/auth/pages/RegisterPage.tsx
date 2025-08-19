@@ -1,22 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 import { create } from "zustand";
-
-// ========== ZUSTAND STORE ==========
-interface FormStore {
-  organization_id: string | null;
-  setOrganizationId: (id: string) => void;
-  clearStore: () => void;
-}
-
-const useFormStore = create<FormStore>((set) => ({
-  organization_id: null,
-  setOrganizationId: (id) => set({ organization_id: id }),
-  clearStore: () => set({ organization_id: null }),
-}));
+import { ProgressIndicator } from "../components/process-indicator/ProgressIndicator";
+import { useFormStore } from "@/stores/auth.store";
 
 // ========== ZOD SCHEMAS ==========
 const organizationSchema = z.object({
@@ -46,11 +35,15 @@ type AddressFormData = z.infer<typeof addressSchema>;
 type UserFormData = z.infer<typeof userSchema>;
 
 // ========== MAIN COMPONENT ==========
-export default function RegisterPage() {
+export default function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [isCnpjLoading, setIsCnpjLoading] = useState(false);
+  const [cnpjError, setCnpjError] = useState<string | null>(null);
+  const [isCepLoading, setIsCepLoading] = useState(false);
+  const [cepError, setCepError] = useState<string | null>(null);
 
   const { organization_id, setOrganizationId, clearStore } = useFormStore();
 
@@ -155,39 +148,104 @@ export default function RegisterPage() {
     setCurrentStep(1);
     setSuccess(false);
     setError(null);
+    setCnpjError(null);
+    setCepError(null);
     organizationForm.reset();
     addressForm.reset();
     userForm.reset();
   };
 
-  // ========== PROGRESS INDICATOR ==========
-  const ProgressIndicator = () => (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        {[1, 2, 3].map((step) => (
-          <div key={step} className="flex items-center">
-            <div
-              className={`
-                w-10 h-10 rounded-full flex items-center justify-center font-semibold
-                ${currentStep >= step ? "bg-orange-500 text-white" : "bg-gray-200 text-gray-500"}
-              `}
-            >
-              {step}
-            </div>
-            {step < 3 && (
-              <div
-                className={`
-                  h-1 w-24 mx-2
-                  ${currentStep > step ? "bg-orange-500" : "bg-gray-200"}
-                `}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="text-center text-sm text-gray-600">Etapa {currentStep} de 3</div>
-    </div>
-  );
+  // ========== CNPJ AUTO-COMPLETE ==========
+  const fetchCnpjData = async (cnpj: string) => {
+    // Remove qualquer formatação do CNPJ
+    const cleanCnpj = cnpj.replace(/[^\d]/g, "");
+
+    if (cleanCnpj.length !== 14) return;
+
+    setIsCnpjLoading(true);
+    setCnpjError(null);
+
+    try {
+      const response = await axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
+
+      if (response.data) {
+        // Preenche os campos automaticamente
+        organizationForm.setValue("legal_name", response.data.razao_social || "");
+        organizationForm.setValue("trading_name", response.data.nome_fantasia || "");
+      }
+    } catch (err: any) {
+      setCnpjError("CNPJ não encontrado ou inválido");
+      // Limpa os campos se houver erro
+      organizationForm.setValue("legal_name", "");
+      organizationForm.setValue("trading_name", "");
+    } finally {
+      setIsCnpjLoading(false);
+    }
+  };
+
+  // Debounce para consulta do CNPJ
+  useEffect(() => {
+    const cnpjValue = organizationForm.watch("cnpj");
+
+    if (!cnpjValue) {
+      setCnpjError(null);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetchCnpjData(cnpjValue);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [organizationForm.watch("cnpj")]);
+
+  // ========== CEP AUTO-COMPLETE ==========
+  const fetchCepData = async (cep: string) => {
+    // Remove qualquer formatação do CEP
+    const cleanCep = cep.replace(/[^\d]/g, "");
+
+    if (cleanCep.length !== 8) return;
+
+    setIsCepLoading(true);
+    setCepError(null);
+
+    try {
+      const response = await axios.get(`https://brasilapi.com.br/api/cep/v2/${cleanCep}`);
+
+      if (response.data) {
+        // Preenche os campos automaticamente
+        addressForm.setValue("state", response.data.state || "");
+        addressForm.setValue("city", response.data.city || "");
+        addressForm.setValue("neighborhood", response.data.neighborhood || "");
+        addressForm.setValue("street", response.data.street || "");
+      }
+    } catch (err: any) {
+      setCepError("CEP não encontrado ou inválido");
+      // Limpa os campos se houver erro
+      addressForm.setValue("state", "");
+      addressForm.setValue("city", "");
+      addressForm.setValue("neighborhood", "");
+      addressForm.setValue("street", "");
+    } finally {
+      setIsCepLoading(false);
+    }
+  };
+
+  // Debounce para consulta do CEP
+  useEffect(() => {
+    const cepValue = addressForm.watch("zip_code");
+
+    if (!cepValue) {
+      setCepError(null);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetchCepData(cepValue);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [addressForm.watch("zip_code")]);
 
   // ========== SUCCESS SCREEN ==========
   if (success) {
@@ -224,7 +282,7 @@ export default function RegisterPage() {
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Cadastro de Organização</h1>
 
-      <ProgressIndicator />
+      <ProgressIndicator currentStep={currentStep} />
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">{error}</div>
@@ -232,12 +290,17 @@ export default function RegisterPage() {
 
       {/* STEP 1: Organization */}
       {currentStep === 1 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-md p-6 w-140">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">Dados da Organização</h2>
           <form onSubmit={organizationForm.handleSubmit(handleOrganizationSubmit)}>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">CNPJ *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  CNPJ *
+                  {isCnpjLoading && (
+                    <span className="ml-2 text-orange-500 text-xs">Consultando...</span>
+                  )}
+                </label>
                 <input
                   {...organizationForm.register("cnpj")}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -248,6 +311,7 @@ export default function RegisterPage() {
                     {organizationForm.formState.errors.cnpj.message}
                   </p>
                 )}
+                {cnpjError && <p className="mt-1 text-sm text-red-600">{cnpjError}</p>}
               </div>
 
               <div>
@@ -311,7 +375,12 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">CEP *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  CEP *
+                  {isCepLoading && (
+                    <span className="ml-2 text-orange-500 text-xs">Consultando...</span>
+                  )}
+                </label>
                 <input
                   {...addressForm.register("zip_code")}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -322,6 +391,7 @@ export default function RegisterPage() {
                     {addressForm.formState.errors.zip_code.message}
                   </p>
                 )}
+                {cepError && <p className="mt-1 text-sm text-red-600">{cepError}</p>}
               </div>
 
               <div className="col-span-2">
