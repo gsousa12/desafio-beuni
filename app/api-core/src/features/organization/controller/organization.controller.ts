@@ -9,7 +9,7 @@ export const createOrganizationHandler = async (
   request: FastifyRequest<{ Body: CreateOrganizationRequestSchemaType }>,
   reply: FastifyReply
 ) => {
-  const { name, cnpj } = request.body;
+  const { cnpj, legal_name, trading_name } = request.body;
 
   const isValidCnpj = cnpjValidator.isValid(cnpj);
   if (!isValidCnpj) {
@@ -20,7 +20,7 @@ export const createOrganizationHandler = async (
     return reply.status(400).send(errorResponse);
   }
 
-  const organization = await OrganizationRepository.getByName(name);
+  const organization = await OrganizationRepository.getByName(legal_name);
   if (organization) {
     const errorResponse: ApiErrorResponseType = {
       status: "error",
@@ -38,7 +38,7 @@ export const createOrganizationHandler = async (
     return reply.status(400).send(errorResponse);
   }
 
-  const data = { name, cnpj };
+  const data = { legal_name, trading_name, cnpj };
 
   const createdOrganization = await OrganizationRepository.create(data);
 

@@ -3,7 +3,6 @@ import { organizationEntitySchema } from "../entity.schema";
 import { errorSchema } from "app/api-core/src/_shared/schemas/common.schemas";
 
 export const createOrganizationResponse = organizationEntitySchema.omit({
-  id: true,
   updated_at: true,
 });
 

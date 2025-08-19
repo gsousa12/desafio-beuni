@@ -1,7 +1,8 @@
 export type OrganizationEntity = {
   id: String;
-  name: String;
   cnpj: String;
+  legal_name: String;
+  trading_name: String | null;
   created_at: Date;
   updated_at?: Date | null;
 };

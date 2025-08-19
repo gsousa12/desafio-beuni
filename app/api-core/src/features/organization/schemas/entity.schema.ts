@@ -19,8 +19,9 @@ import z from "zod";
 export const organizationEntitySchema = entitySchemaFromType<OrganizationEntity>()(
   z.object({
     id: idSchema,
-    name: nameSchema,
     cnpj: cnpjSchema,
+    legal_name: nameSchema,
+    trading_name: nameSchema,
     created_at: createdAtSchema,
     updated_at: updatedAtSchema,
   })

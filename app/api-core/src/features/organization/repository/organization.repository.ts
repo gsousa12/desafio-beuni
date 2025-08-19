@@ -3,10 +3,10 @@ import { OrganizationAddressEntity } from "packages/types/dist";
 
 const db = prisma;
 
-const getByName = async (name: string) => {
+const getByName = async (legal_name: string) => {
   return db.organization.findFirst({
     where: {
-      name,
+      legal_name,
     },
   });
 };
@@ -22,7 +22,8 @@ const getByCnpj = async (cnpj: string) => {
 const create = async (data: any) => {
   return db.organization.create({
     data: {
-      name: data.name,
+      legal_name: data.legal_name,
+      trading_name: data.trading_name,
       cnpj: data.cnpj,
     },
   });
