@@ -5,12 +5,20 @@ export const idSchema = z.string().uuid("O campo 'id' deve ser um UUID válido")
 export const zipCodeSchema = z
   .string()
   .trim()
-  .length(8, "O campo 'zip_code' deve ter exatamente 8 caracteres");
+  .length(8, "O campo 'CEP' deve ter exatamente 8 caracteres");
 
 export const cnpjSchema = z
   .string()
   .trim()
-  .length(14, "O campo 'tax_id' deve ter exatamente 14 caracteres");
+  .refine(
+    (value) => {
+      const numericOnly = value.replace(/\D/g, "");
+      return numericOnly.length === 14;
+    },
+    {
+      message: "O campo 'cnpj' deve ter exatamente 14 dígitos numéricos",
+    }
+  );
 
 export const emailSchema = z
   .string()
@@ -21,14 +29,14 @@ export const emailSchema = z
 
 export const passwordSchema = z
   .string()
-  .min(8, "O campo 'password' deve ter pelo menos 8 caracteres")
-  .max(100, "O campo 'password' deve ter no máximo 100 caracteres");
+  .min(8, "O campo 'senha' deve ter pelo menos 8 caracteres")
+  .max(100, "O campo 'senha' deve ter no máximo 100 caracteres");
 
 export const fullNameSchema = z
   .string()
   .trim()
-  .min(5, "O campo 'full-name' deve ter pelo menos 5 caracteres")
-  .max(200, "O campo 'full-name' deve ter no máximo 200 caracteres");
+  .min(5, "O campo 'nome' deve ter pelo menos 5 caracteres")
+  .max(200, "O campo 'nome' deve ter no máximo 200 caracteres");
 
 export const createdAtSchema = z.coerce.date();
 export const updatedAtSchema = z.coerce.date().nullable().optional();
@@ -41,17 +49,17 @@ export const errorSchema = z.object({
 
 export const stateSchema = z
   .string()
-  .length(2, "O campo 'state' deve ter exatamente 2 caracteres")
+  .length(2, "O campo 'estado' deve ter exatamente 2 caracteres")
   .transform((val) => val.toUpperCase())
   .refine((val) => /^[A-Z]{2}$/.test(val), {
-    message: "O campo 'state' deve conter apenas letras maiúsculas",
+    message: "O campo 'estado' deve conter apenas letras maiúsculas",
   });
 
 export const nameSchema = z
   .string()
   .trim()
-  .min(3, "O campo 'name' deve ter pelo menos 3 caracteres")
-  .max(100, "O campo 'name' deve ter no máximo 100 caracteres");
+  .min(3, "O campo 'nome' deve ter pelo menos 3 caracteres")
+  .max(100, "O campo 'nome' deve ter no máximo 100 caracteres");
 
 export const descriptionSchema = z
   .string()
@@ -59,32 +67,32 @@ export const descriptionSchema = z
   .nullable()
   .optional()
   .refine((val) => val === null || val === undefined || (val.length >= 3 && val.length <= 100), {
-    message: "O campo 'description' deve ter entre 3 e 100 caracteres",
+    message: "O campo 'descrição' deve ter entre 3 e 100 caracteres",
   });
 
 export const citySchema = z
   .string()
   .trim()
-  .min(3, "O campo 'city' deve ter pelo menos 3 caracteres")
-  .max(100, "O campo 'city' deve ter no máximo 100 caracteres");
+  .min(3, "O campo 'cidaded' deve ter pelo menos 3 caracteres")
+  .max(100, "O campo 'cidaded' deve ter no máximo 100 caracteres");
 
 export const neighborhoodSchema = z
   .string()
   .trim()
-  .min(5, "O campo 'neighborhood' deve ter pelo menos 5 caracteres")
-  .max(200, "O campo 'neighborhood' deve ter no máximo 200 caracteres");
+  .min(5, "O campo 'bairro' deve ter pelo menos 5 caracteres")
+  .max(200, "O campo 'bairro' deve ter no máximo 200 caracteres");
 
 export const streetSchema = z
   .string()
   .trim()
-  .min(5, "O campo 'street' deve ter pelo menos 5 caracteres")
-  .max(200, "O campo 'street' deve ter no máximo 200 caracteres");
+  .min(5, "O campo 'rua' deve ter pelo menos 5 caracteres")
+  .max(200, "O campo 'rua' deve ter no máximo 200 caracteres");
 
 export const residentialNumberSchema = z
   .string()
   .trim()
-  .min(1, "O campo 'number' deve ter pelo menos 1 caracteres")
-  .max(20, "O campo 'number' deve ter no máximo 20 caracteres");
+  .min(1, "O campo 'número' deve ter pelo menos 1 caracteres")
+  .max(20, "O campo 'número' deve ter no máximo 20 caracteres");
 
 export const cpfSchema = z
   .string()
@@ -94,7 +102,7 @@ export const cpfSchema = z
 export const phoneSchema = z
   .string()
   .trim()
-  .max(15, "O campo 'phone' deve ter no máximo 15 caracteres");
+  .max(15, "O campo 'telefone' deve ter no máximo 15 caracteres");
 
 export const birthDateSchema = z.date().refine((date) => date <= new Date(), {
   message: "O campo 'birth_date' deve ser uma data válida no passado ou presente",

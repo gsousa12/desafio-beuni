@@ -2,6 +2,19 @@ interface ProgressIndicatorProps {
   currentStep: number;
 }
 
+const formCurrentStepMessage = (step: number): string => {
+  switch (step) {
+    case 1:
+      return "Registre sua organização com base nas informações legais";
+    case 2:
+      return "Cadastre o endereço de sua organização";
+    case 3:
+      return "Agora cadastre o usuário administrador";
+    default:
+      return "Bem-vindo ao nosso aplicativo";
+  }
+};
+
 export const ProgressIndicator = ({ currentStep }: ProgressIndicatorProps) => (
   <div className="mb-8">
     <div className="flex items-center justify-between mb-4">
@@ -26,6 +39,6 @@ export const ProgressIndicator = ({ currentStep }: ProgressIndicatorProps) => (
         </div>
       ))}
     </div>
-    <div className="text-center text-sm text-gray-600">Etapa {currentStep} de 3</div>
+    <div className="text-center text-sm text-gray-600">{formCurrentStepMessage(currentStep)}</div>
   </div>
 );

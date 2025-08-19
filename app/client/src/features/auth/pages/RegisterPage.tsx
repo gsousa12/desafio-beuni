@@ -3,38 +3,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
-import { create } from "zustand";
 import { ProgressIndicator } from "../components/process-indicator/ProgressIndicator";
 import { useFormStore } from "@/stores/auth.store";
+import { AlertPopup } from "@/components/popups/alert-popup/AlertPopup";
+import { useNavigate } from "react-router-dom";
+import {
+  AddressFormData,
+  addressSchema,
+  OrganizationFormData,
+  organizationSchema,
+  UserFormData,
+  userSchema,
+} from "../schemas/register-page.schemas";
+import { formatCNPJ, getCurrentTitle } from "@/_shared/utils/functions";
 
-// ========== ZOD SCHEMAS ==========
-const organizationSchema = z.object({
-  cnpj: z.string().min(14, "CNPJ deve ter pelo menos 14 caracteres"),
-  legal_name: z.string().min(1, "Razão social é obrigatória"),
-  trading_name: z.string().optional().nullable(),
-});
-
-const addressSchema = z.object({
-  state: z.string().min(2, "Estado é obrigatório"),
-  city: z.string().min(1, "Cidade é obrigatória"),
-  neighborhood: z.string().min(1, "Bairro é obrigatório"),
-  street: z.string().min(1, "Rua é obrigatória"),
-  zip_code: z.string().min(8, "CEP deve ter 8 dígitos"),
-  number: z.string().min(1, "Número é obrigatório"),
-});
-
-const userSchema = z.object({
-  full_name: z.string().min(1, "Nome completo é obrigatório"),
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
-});
-
-// ========== TYPES ==========
-type OrganizationFormData = z.infer<typeof organizationSchema>;
-type AddressFormData = z.infer<typeof addressSchema>;
-type UserFormData = z.infer<typeof userSchema>;
-
-// ========== MAIN COMPONENT ==========
 export default function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +26,7 @@ export default function MultiStepForm() {
   const [cnpjError, setCnpjError] = useState<string | null>(null);
   const [isCepLoading, setIsCepLoading] = useState(false);
   const [cepError, setCepError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const { organization_id, setOrganizationId, clearStore } = useFormStore();
 
@@ -60,13 +43,18 @@ export default function MultiStepForm() {
     resolver: zodResolver(userSchema),
   });
 
-  // ========== HANDLERS ==========
   const handleOrganizationSubmit = async (data: OrganizationFormData) => {
     setIsLoading(true);
     setError(null);
+    const parsedCnpj = data.cnpj.replace(/[^\d]/g, "");
+    const requestData: OrganizationFormData = {
+      cnpj: parsedCnpj,
+      legal_name: data.legal_name,
+      trading_name: data.trading_name,
+    };
 
     try {
-      const response = await axios.post("http://localhost:3001/api/organization/", data);
+      const response = await axios.post("http://localhost:3001/api/organization/", requestData);
 
       if (response.data.status === "success" && response.data.data?.[0]?.id) {
         const orgId = response.data.data[0].id;
@@ -145,7 +133,6 @@ export default function MultiStepForm() {
 
   const handleReset = () => {
     clearStore();
-    setCurrentStep(1);
     setSuccess(false);
     setError(null);
     setCnpjError(null);
@@ -153,11 +140,10 @@ export default function MultiStepForm() {
     organizationForm.reset();
     addressForm.reset();
     userForm.reset();
+    navigate("/login", { replace: true });
   };
 
-  // ========== CNPJ AUTO-COMPLETE ==========
   const fetchCnpjData = async (cnpj: string) => {
-    // Remove qualquer formatação do CNPJ
     const cleanCnpj = cnpj.replace(/[^\d]/g, "");
 
     if (cleanCnpj.length !== 14) return;
@@ -169,13 +155,11 @@ export default function MultiStepForm() {
       const response = await axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cleanCnpj}`);
 
       if (response.data) {
-        // Preenche os campos automaticamente
         organizationForm.setValue("legal_name", response.data.razao_social || "");
         organizationForm.setValue("trading_name", response.data.nome_fantasia || "");
       }
     } catch (err: any) {
-      setCnpjError("CNPJ não encontrado ou inválido");
-      // Limpa os campos se houver erro
+      setCnpjError("CNPJ não encontrado");
       organizationForm.setValue("legal_name", "");
       organizationForm.setValue("trading_name", "");
     } finally {
@@ -183,7 +167,6 @@ export default function MultiStepForm() {
     }
   };
 
-  // Debounce para consulta do CNPJ
   useEffect(() => {
     const cnpjValue = organizationForm.watch("cnpj");
 
@@ -199,9 +182,7 @@ export default function MultiStepForm() {
     return () => clearTimeout(timer);
   }, [organizationForm.watch("cnpj")]);
 
-  // ========== CEP AUTO-COMPLETE ==========
   const fetchCepData = async (cep: string) => {
-    // Remove qualquer formatação do CEP
     const cleanCep = cep.replace(/[^\d]/g, "");
 
     if (cleanCep.length !== 8) return;
@@ -213,7 +194,6 @@ export default function MultiStepForm() {
       const response = await axios.get(`https://brasilapi.com.br/api/cep/v2/${cleanCep}`);
 
       if (response.data) {
-        // Preenche os campos automaticamente
         addressForm.setValue("state", response.data.state || "");
         addressForm.setValue("city", response.data.city || "");
         addressForm.setValue("neighborhood", response.data.neighborhood || "");
@@ -221,7 +201,6 @@ export default function MultiStepForm() {
       }
     } catch (err: any) {
       setCepError("CEP não encontrado ou inválido");
-      // Limpa os campos se houver erro
       addressForm.setValue("state", "");
       addressForm.setValue("city", "");
       addressForm.setValue("neighborhood", "");
@@ -231,7 +210,6 @@ export default function MultiStepForm() {
     }
   };
 
-  // Debounce para consulta do CEP
   useEffect(() => {
     const cepValue = addressForm.watch("zip_code");
 
@@ -247,40 +225,11 @@ export default function MultiStepForm() {
     return () => clearTimeout(timer);
   }, [addressForm.watch("zip_code")]);
 
-  // ========== SUCCESS SCREEN ==========
-  if (success) {
-    return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-green-50 border-2 border-green-500 rounded-lg p-8 text-center">
-          <svg
-            className="w-16 h-16 text-green-500 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          <h2 className="text-2xl font-bold text-green-700 mb-2">
-            Cadastro Concluído com Sucesso!
-          </h2>
-          <p className="text-green-600 mb-6">
-            Organização, endereço e usuário admin foram criados.
-          </p>
-          <button
-            onClick={handleReset}
-            className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-          >
-            Novo Cadastro
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ========== MAIN RENDER ==========
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">Cadastro de Organização</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+        {getCurrentTitle(currentStep)}
+      </h1>
 
       <ProgressIndicator currentStep={currentStep} />
 
@@ -303,8 +252,18 @@ export default function MultiStepForm() {
                 </label>
                 <input
                   {...organizationForm.register("cnpj")}
+                  value={formatCNPJ(organizationForm.watch("cnpj") || "")}
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/\D/g, "");
+                    organizationForm.setValue("cnpj", rawValue, {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="00000000000000"
+                  placeholder="00.000.000/0000-00"
+                  maxLength={18}
                 />
                 {organizationForm.formState.errors.cnpj && (
                   <p className="mt-1 text-sm text-red-600">
@@ -345,7 +304,9 @@ export default function MultiStepForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 w-full py-2 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="mt-6 w-full py-2 px-4 bg-orange-500
+               text-white font-semibold rounded-md hover:bg-orange-600 hover:cursor-pointer
+                disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? "Criando..." : "Próxima Etapa"}
             </button>
@@ -383,7 +344,8 @@ export default function MultiStepForm() {
                 </label>
                 <input
                   {...addressForm.register("zip_code")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2
+                   focus:ring-orange-500"
                   placeholder="00000000"
                 />
                 {addressForm.formState.errors.zip_code && (
@@ -398,7 +360,8 @@ export default function MultiStepForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cidade *</label>
                 <input
                   {...addressForm.register("city")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="São Paulo"
                 />
                 {addressForm.formState.errors.city && (
@@ -412,7 +375,8 @@ export default function MultiStepForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Bairro *</label>
                 <input
                   {...addressForm.register("neighborhood")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Centro"
                 />
                 {addressForm.formState.errors.neighborhood && (
@@ -426,7 +390,8 @@ export default function MultiStepForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Rua *</label>
                 <input
                   {...addressForm.register("street")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Avenida Paulista"
                 />
                 {addressForm.formState.errors.street && (
@@ -440,7 +405,8 @@ export default function MultiStepForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Número *</label>
                 <input
                   {...addressForm.register("number")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="1578"
                 />
                 {addressForm.formState.errors.number && (
@@ -454,7 +420,9 @@ export default function MultiStepForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 w-full py-2 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="mt-6 w-full py-2 px-4 bg-orange-500 
+              text-white font-semibold rounded-md hover:bg-orange-600 hover:cursor-pointer
+              disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? "Salvando..." : "Próxima Etapa"}
             </button>
@@ -474,7 +442,8 @@ export default function MultiStepForm() {
                 </label>
                 <input
                   {...userForm.register("full_name")}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="João Silva"
                 />
                 {userForm.formState.errors.full_name && (
@@ -489,7 +458,8 @@ export default function MultiStepForm() {
                 <input
                   {...userForm.register("email")}
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="admin@empresa.com"
                 />
                 {userForm.formState.errors.email && (
@@ -504,8 +474,9 @@ export default function MultiStepForm() {
                 <input
                   {...userForm.register("password")}
                   type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="Mínimo 6 caracteres"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md
+                   focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Mínimo 8 caracteres"
                 />
                 {userForm.formState.errors.password && (
                   <p className="mt-1 text-sm text-red-600">
@@ -518,12 +489,24 @@ export default function MultiStepForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 w-full py-2 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="mt-6 w-full py-2 px-4 bg-orange-500 
+              text-white font-semibold rounded-md hover:bg-orange-600 
+              disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:cursor-pointer"
             >
               {isLoading ? "Finalizando..." : "Concluir Cadastro"}
             </button>
           </form>
         </div>
+      )}
+
+      {success && (
+        <AlertPopup
+          isOpen={success}
+          message="Cadastro realizado com sucesso. Efetue o login para continuar"
+          onClose={handleReset}
+          title="Cadastro Completo"
+          status="success"
+        />
       )}
     </div>
   );
