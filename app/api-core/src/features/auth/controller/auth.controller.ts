@@ -30,7 +30,7 @@ export const loginHandler = async (
   const jwtPayload: JwtPayloadType = {
     id: existingUser.id,
     organization_id: existingUser.organization_id,
-    name: existingUser.full_name,
+    full_name: existingUser.full_name,
     email: existingUser.email,
   };
 
@@ -60,5 +60,25 @@ export const logoutHandler = async (_: FastifyRequest, reply: FastifyReply) => {
     meta: {},
     data: [],
   };
+  return reply.status(200).send(response);
+};
+
+export const ValidateHandler = async (request: FastifyRequest, reply: FastifyReply) => {
+  const user = request.user as JwtPayloadType;
+  if (!user) {
+    const errorResponse: ApiErrorResponseType = {
+      status: "error",
+      message: "Usuário não encontrado",
+    };
+    return reply.status(400).send(errorResponse);
+  }
+
+  const response: ApiSuccessResponseType = {
+    status: "success",
+    message: "Usuário validado com sucesso",
+    meta: {},
+    data: [user],
+  };
+
   return reply.status(200).send(response);
 };

@@ -1,12 +1,17 @@
 import { useMemo } from "react";
-import { MOCK_USERNAME } from "../Header";
+import { useAuthStore } from "@/stores/auth.store";
+import { JwtPayloadType } from "@packages/types";
 
-export const HeaderAvatar = () => {
-  const initial = useMemo(() => MOCK_USERNAME?.[0]?.toUpperCase() ?? "U", []);
+interface HeaderUserAreaProps {
+  user: JwtPayloadType | null;
+}
+
+export const HeaderAvatar = ({ user }: HeaderUserAreaProps) => {
+  const initial = useMemo(() => user?.full_name?.[0]?.toUpperCase() ?? "U", []);
   return (
     <div
       className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-stone-200 text-stone-700"
-      aria-label={`Avatar de ${MOCK_USERNAME}`}
+      aria-label={`Avatar de ${user?.full_name}`}
     >
       <span className="text-sm font-semibold">{initial}</span>
     </div>

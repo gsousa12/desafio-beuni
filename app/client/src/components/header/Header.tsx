@@ -6,6 +6,7 @@ import { DesktopNav } from "./desktop/desktop-nav/DesktopNav";
 import { MobileMenuButton } from "./mobile/mobile-menu-button/MobileMenuButton";
 import { MobileHeaderDrawer } from "./mobile/mobile-header-drawer/MobileHeaderDrawer";
 import { AlignEndHorizontal, Building2, Gift, LucideProps, Users } from "lucide-react";
+import { useAuthStore } from "@/stores/auth.store";
 
 export const MOCK_USERNAME = "Tester";
 
@@ -35,6 +36,7 @@ const Logo = () => {
 };
 
 export const Header = () => {
+  const user = useAuthStore((state) => state.user);
   const isMobile = useMobileDetect();
   const [open, setOpen] = useState(false);
 
@@ -48,7 +50,7 @@ export const Header = () => {
           {isMobile && <MobileMenuButton open={open} onToggle={() => setOpen((v) => !v)} />}
           <Logo />
         </div>
-        <HeaderUserArea />
+        <HeaderUserArea user={user} />
       </div>
 
       {!isMobile && (

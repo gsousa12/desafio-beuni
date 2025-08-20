@@ -1,13 +1,18 @@
+import { JwtPayloadType } from "@packages/types";
 import { create } from "zustand";
 
-export interface FormStore {
-  organization_id: string | null;
-  setOrganizationId: (id: string) => void;
-  clearStore: () => void;
-}
+export type AuthStateType = {
+  isAuthenticated: boolean;
+  user: JwtPayloadType | null;
+  setAuthenticated: (value: boolean) => void;
+  setUser: (user: JwtPayloadType | null) => void;
+  logout: () => void;
+};
 
-export const useFormStore = create<FormStore>((set) => ({
-  organization_id: null,
-  setOrganizationId: (id) => set({ organization_id: id }),
-  clearStore: () => set({ organization_id: null }),
+export const useAuthStore = create<AuthStateType>((set) => ({
+  isAuthenticated: false,
+  user: null,
+  setAuthenticated: (value) => set({ isAuthenticated: value }),
+  setUser: (user) => set({ user }),
+  logout: () => set({ user: null, isAuthenticated: false }),
 }));

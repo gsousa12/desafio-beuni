@@ -13,7 +13,7 @@ export type ApiErrorResponseType = {
 export type JwtPayloadType = {
   id: string;
   organization_id: string;
-  name: string;
+  full_name: string;
   email: string;
 };
 

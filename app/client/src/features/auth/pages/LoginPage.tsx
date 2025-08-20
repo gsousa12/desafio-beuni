@@ -8,6 +8,7 @@ import { useLoginPageController } from "../hooks/useLoginPageController";
 import { useMobileDetect } from "@/_shared/hooks/useMobileDetect";
 import { LoginPageLeftSide } from "../components/login-page-left-side/LoginPageLeftSide";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth.store";
 
 const loginSchema = z.object({
   email: z.email("E-mail inválido"),
@@ -25,9 +26,6 @@ export const LoginPage = () => {
 
   useEffect(() => {
     error ? setOpenAlertPopUp(true) : setOpenAlertPopUp(false);
-    if (isSuccess) {
-      alert("Login realizado com sucesso!");
-    }
   }, [error, isSuccess]);
 
   const {

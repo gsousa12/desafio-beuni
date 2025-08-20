@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 import { ProgressIndicator } from "../components/process-indicator/ProgressIndicator";
-import { useFormStore } from "@/stores/auth.store";
+import { useFormStore } from "@/stores/register-form.store";
 import { AlertPopup } from "@/components/popups/alert-popup/AlertPopup";
 import { useNavigate } from "react-router-dom";
 import {

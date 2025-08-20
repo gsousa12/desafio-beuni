@@ -7,9 +7,10 @@ import { AuthenticatedRoutes } from "./components/app/authenticated-routes/Authe
 import { Header } from "./components/header/Header";
 import { Footer } from "./components/footer/Footer";
 import { NotAuthenticatedRoutes } from "./components/app/not-authenticated-routes/NotAuthenticatedRoutes";
+import { useAuthStore } from "./stores/auth.store";
 
 export const App = () => {
-  const isAuthenticated = false;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return (
     <GlobalWrapper>
       {isAuthenticated ? (

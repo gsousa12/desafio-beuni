@@ -2,7 +2,6 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 import fastifyJwt from "@fastify/jwt";
 import { JwtPayloadType } from "packages/types/dist";
-import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
 declare module "fastify" {
   export interface FastifyInstance {
