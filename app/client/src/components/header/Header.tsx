@@ -22,11 +22,11 @@ type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", to: "/dashboard", icon: AlignEndHorizontal },
   { label: "Setores", to: "/sectors", icon: Building2 },
-  { label: "Funcionários", to: "/employees", icon: Users },
+  { label: "Colaboradores", to: "/employees", icon: Users },
   { label: "Brindes", to: "/gifts", icon: Gift },
 ];
 
-const Logo: React.FC = () => {
+const Logo = () => {
   return (
     <div className="flex items-center">
       <span className="font-semibold italic tracking-tight text-2xl text-orange-600">beuni</span>
