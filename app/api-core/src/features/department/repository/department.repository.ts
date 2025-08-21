@@ -1,3 +1,5 @@
+import { DEFAULT_PAGE_SIZE } from "app/api-core/src/_shared/const/pagination";
+import { createPaginationMeta } from "app/api-core/src/_shared/utils/utils";
 import { prisma } from "packages/prisma/dist";
 import { DepartmentEntity } from "packages/types/dist";
 
@@ -34,4 +36,25 @@ const create = async (organizationId: string, data: any): Promise<DepartmentEnti
   });
 };
 
-export const DepartmentRepository = { getByName, create, getById };
+const getAll = async (page: number, organizationId: string) => {
+  const pageSize = DEFAULT_PAGE_SIZE;
+  const skip = (page - 1) * pageSize;
+
+  const where: any = { organization_id: organizationId, deleted_at: null };
+
+  const [data, total] = await Promise.all([
+    db.department.findMany({
+      where,
+      skip,
+      take: pageSize,
+      orderBy: { created_at: "desc" },
+    }),
+    db.department.count({ where }),
+  ]);
+
+  const meta = createPaginationMeta(page, pageSize, total);
+
+  return { data, meta };
+};
+
+export const DepartmentRepository = { getByName, create, getById, getAll };
